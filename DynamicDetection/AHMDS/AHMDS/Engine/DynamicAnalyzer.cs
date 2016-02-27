@@ -5,12 +5,13 @@ using System.Text;
 using System.Diagnostics;
 using System.Threading;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace AHMDS.Engine
 {
     class DynamicAnalyzer
     {
-        private const int ANALYZE_DURATION = 15;
+        private const int ANALYZE_DURATION = 5;
         private const string SBIE_BOX_LOC = @"C:\Sandbox\Andre\"; // must end with \ !!
         private const string SBIE_DLL_LOC = @"C:\Program Files\Sandboxie\32\SbieDll.dll";
         private const string SBIE_START_LOC = @"C:\Program Files\Sandboxie\Start.exe";
@@ -146,7 +147,107 @@ namespace AHMDS.Engine
 
 
             }
-            
+
+            public Dictionary<string, List<string>> DumpRegistries()
+            {
+                Dictionary<string, List<string>> registries = new Dictionary<string, List<string>>();
+
+                // copy file RegHive
+                bool fileLocked = true;
+                while (fileLocked)
+                {
+                    try
+                    {
+                        File.Copy(SBIE_BOX_LOC + box + "\\RegHive", box + "_hive", true);
+                        fileLocked = false;
+                    }
+                    catch (Exception x)
+                    {
+                        Thread.Sleep(200); // file masih dikunci (karena masih ditulis oleh Sandboxie)
+                    }
+                }
+
+
+                Process p = new Process();
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.FileName = "regexport.dll";
+                p.StartInfo.Arguments = box + "_hive tmphive_" + box; // menggunakan library registry export
+                
+                p.StartInfo.CreateNoWindow = true;
+                p.Start();
+                string extractResult = p.StandardOutput.ReadToEnd(); // baca hasil proses library
+                p.WaitForExit();
+
+                Console.Out.WriteLine(p.StartInfo.Arguments);
+
+                if (extractResult.Trim().Equals(""))
+                {
+                    string line = null;
+                    StreamReader regFile = new StreamReader("tmphive_" + box);
+
+                    string keyName = "";
+                    List<string> keyContents = null;
+                    StringBuilder tmpContent = new StringBuilder();
+                    
+                    while ((line = regFile.ReadLine()) != null)
+                    {
+                        if (keyName.Equals(""))
+                        {
+                            Regex rgx = new Regex(@"\[(.+)\]", RegexOptions.IgnoreCase);
+                            Match match = rgx.Match(line);
+
+                            if (match.Success)
+                            {
+                                GroupCollection groups = match.Groups;
+                                keyName = groups[1].Value;
+                                keyContents = new List<string>();
+                            }
+                        }
+                        else
+                        {
+                            if (line.EndsWith(@"\"))  // registry cukup panjang (biasanya hex)
+                            {
+                                tmpContent.Append(line.Remove(line.Length - 1)); // hilangkan \
+                            }
+                            else if (tmpContent.Length > 0)
+                            {
+                                tmpContent.Append(line);
+                                keyContents.Add(tmpContent.ToString());
+                                tmpContent.Clear();
+                            }
+                            else
+                            {
+                                if (line.Trim().Equals("")) // spacing antar key dan value, mengindikasian sudah tidak ada value lagi pada key tsb
+                                {
+                                    try
+                                    {
+                                        registries.Add(keyName, keyContents);
+                                    }
+                                    catch (ArgumentException x)
+                                    {
+                                        // terdapat key yang sama, seharusnya tidak terlalu penting
+                                    }
+                                    keyName = "";
+                                }
+                                else
+                                {
+                                    keyContents.Add(line);
+                                }
+                            }
+
+                        }
+                    }
+                    regFile.Close();
+                }
+                else
+                {
+                    Console.Out.WriteLine(extractResult);
+                    throw new Exception("Fail to dump Registry Hive file. Malware Box: " + box); // gagal dump reghive
+                }
+
+                return registries;
+            }
         }
     }
 }

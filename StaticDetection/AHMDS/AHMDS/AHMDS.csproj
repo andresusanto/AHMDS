@@ -136,7 +136,7 @@
     <Content Include="av.accdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="HAPI.EXE">
+    <Content Include="hapi.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
