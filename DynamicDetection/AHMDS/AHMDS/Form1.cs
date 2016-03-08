@@ -19,40 +19,11 @@ namespace AHMDS
             InitializeComponent();
         }
 
-        //private class Handler : CustomWindow.IWndProc
-        //{
-        //    private TextBox textbox;
-
-        //    public Handler(TextBox textbox)
-        //    {
-        //        this.textbox = textbox;
-        //    }
-
-        //    public void WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
-        //    {
-        //        if (msg == 0x004A)
-        //        {
-        //            CustomWindow.COPYDATASTRUCT cds = (CustomWindow.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(CustomWindow.COPYDATASTRUCT));
-        //            if (cds.cbData > 0)
-        //            {
-        //                byte[] data = new byte[cds.cbData];
-        //                Marshal.Copy(cds.lpData, data, 0, cds.cbData);
-        //                Encoding unicodeStr = Encoding.ASCII;
-        //                char[] myString = unicodeStr.GetChars(data);
-        //                string returnText = new string(myString);
-
-        //                textbox.AppendText(returnText);
-        //                textbox.AppendText("\n");
-
-        //            }
-        //        }
-        //    }
-        //}
         
         private void Form1_Load(object sender, EventArgs e)
         {
             // receiver log
-            CustomWindow.Handler wnd = delegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+            CustomWindow.Handler wnd1 = delegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
             {
                 if (msg == 0x004A)
                 {
@@ -72,10 +43,52 @@ namespace AHMDS
                 }
             };
 
-            
-            CustomWindow cw = new CustomWindow("TFormBSA", "Buster Sandbox Analyzer", wnd);
-            
+            CustomWindow.Handler wnd2 = delegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+            {
+                if (msg == 0x004A)
+                {
+                    CustomWindow.COPYDATASTRUCT cds = (CustomWindow.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(CustomWindow.COPYDATASTRUCT));
+                    if (cds.cbData > 0)
+                    {
+                        byte[] data = new byte[cds.cbData];
+                        Marshal.Copy(cds.lpData, data, 0, cds.cbData);
+                        Encoding unicodeStr = Encoding.ASCII;
+                        char[] myString = unicodeStr.GetChars(data);
+                        string returnText = new string(myString);
 
+                        textBox2.AppendText(returnText);
+                        textBox2.AppendText("\n");
+
+                    }
+                }
+            };
+
+            CustomWindow.Handler wnd3 = delegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+            {
+                if (msg == 0x004A)
+                {
+                    CustomWindow.COPYDATASTRUCT cds = (CustomWindow.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(CustomWindow.COPYDATASTRUCT));
+                    if (cds.cbData > 0)
+                    {
+                        byte[] data = new byte[cds.cbData];
+                        Marshal.Copy(cds.lpData, data, 0, cds.cbData);
+                        Encoding unicodeStr = Encoding.ASCII;
+                        char[] myString = unicodeStr.GetChars(data);
+                        string returnText = new string(myString);
+
+                        textBox3.AppendText(returnText);
+                        textBox3.AppendText("\n");
+
+                    }
+                }
+            };
+
+            CustomWindow cw1 = new CustomWindow("AHMDSAP1", "Malware1", wnd1);
+
+            CustomWindow cw2 = new CustomWindow("AHMDSAP2", "Malware2", wnd2);
+
+            CustomWindow cw3 = new CustomWindow("AHMDSAP3", "Malware3", wnd3);
+            
         }
     }
 }

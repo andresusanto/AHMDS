@@ -19,6 +19,9 @@ namespace AHMDS
         {
             InitializeComponent();
             System.Windows.Forms.Form.CheckForIllegalCrossThreadCalls = false;
+
+            StaticAnalyzer sa = new StaticAnalyzer();
+            sa.extractAPICalls(@"D:\Project\TA\bsa\BSA.EXE");
         }
 
         List<string> expandFolder(string alamat)

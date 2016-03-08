@@ -57,6 +57,30 @@ namespace AHMDS.Engine
             return CheckToDb(FileName);
         }
 
+        public List<string> extractAPICalls(string FileName)
+        {
+            List<string> result = new List<string>();
+            Process p = new Process();
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.FileName = "hapi.dll";
+            p.StartInfo.Arguments = FileName; // menggunakan library registry export
+
+            p.StartInfo.CreateNoWindow = true;
+            p.Start();
+            string extractResult = p.StandardOutput.ReadToEnd(); // baca hasil proses library
+            p.WaitForExit();
+
+            string[] apiCalls = extractResult.Split('\n');
+
+            foreach (string apiCall in apiCalls)
+            {
+                result.Add(apiCall.Trim());
+            }
+
+            return result;
+        }
+
         private void CleanUp(string[] FileNames)
         {
             foreach (string fileName in FileNames)
