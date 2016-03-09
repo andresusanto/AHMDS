@@ -8,7 +8,7 @@ using System.Windows.Forms;
 namespace AHMDS.Engine
 {
 
-    class CustomWindow : IDisposable
+    class AHMDSWindow : IDisposable
     {
         public struct COPYDATASTRUCT
         {
@@ -104,7 +104,7 @@ namespace AHMDS.Engine
             }
         }
 
-        public CustomWindow(string class_name, string title, Handler handler)
+        public AHMDSWindow(string class_name, string title, Handler handler)
         {
 
             if (class_name == null) throw new System.Exception("class_name is null");
@@ -148,7 +148,7 @@ namespace AHMDS.Engine
         {
             if (msg == 0x004A)
             {
-                CustomWindow.COPYDATASTRUCT cds = (CustomWindow.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(CustomWindow.COPYDATASTRUCT));
+                COPYDATASTRUCT cds = (COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(COPYDATASTRUCT));
                 if (cds.cbData > 0)
                 {
                     byte[] data = new byte[cds.cbData];
