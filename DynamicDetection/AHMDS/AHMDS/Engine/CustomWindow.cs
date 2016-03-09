@@ -18,7 +18,7 @@ namespace AHMDS.Engine
         }
 
         delegate IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-        public delegate void Handler(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        public delegate void Handler(string apiCall);
 
 
         [System.Runtime.InteropServices.StructLayout(
@@ -146,7 +146,21 @@ namespace AHMDS.Engine
 
         private IntPtr CustomWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
-            handler(hWnd, msg, wParam, lParam);
+            if (msg == 0x004A)
+            {
+                CustomWindow.COPYDATASTRUCT cds = (CustomWindow.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(CustomWindow.COPYDATASTRUCT));
+                if (cds.cbData > 0)
+                {
+                    byte[] data = new byte[cds.cbData];
+                    Marshal.Copy(cds.lpData, data, 0, cds.cbData);
+                    Encoding unicodeStr = Encoding.ASCII;
+                    char[] myString = unicodeStr.GetChars(data);
+                    string returnText = new string(myString);
+
+                    handler(returnText);
+                }
+            }
+
             return DefWindowProcW(hWnd, msg, wParam, lParam);
         }
 

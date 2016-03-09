@@ -23,72 +23,40 @@ namespace AHMDS
         private void Form1_Load(object sender, EventArgs e)
         {
             // receiver log
-            CustomWindow.Handler wnd1 = delegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+            CustomWindow.Handler wnd1 = delegate(string apiCall)
             {
-                if (msg == 0x004A)
-                {
-                    CustomWindow.COPYDATASTRUCT cds = (CustomWindow.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(CustomWindow.COPYDATASTRUCT));
-                    if (cds.cbData > 0)
-                    {
-                        byte[] data = new byte[cds.cbData];
-                        Marshal.Copy(cds.lpData, data, 0, cds.cbData);
-                        Encoding unicodeStr = Encoding.ASCII;
-                        char[] myString = unicodeStr.GetChars(data);
-                        string returnText = new string(myString);
-
-                        textBox1.AppendText(returnText);
-                        textBox1.AppendText("\n");
-
-                    }
-                }
+                textBox1.AppendText(apiCall);
+                textBox1.AppendText("\n");
             };
 
-            CustomWindow.Handler wnd2 = delegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+            CustomWindow.Handler wnd2 = delegate(string apiCall)
             {
-                if (msg == 0x004A)
-                {
-                    CustomWindow.COPYDATASTRUCT cds = (CustomWindow.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(CustomWindow.COPYDATASTRUCT));
-                    if (cds.cbData > 0)
-                    {
-                        byte[] data = new byte[cds.cbData];
-                        Marshal.Copy(cds.lpData, data, 0, cds.cbData);
-                        Encoding unicodeStr = Encoding.ASCII;
-                        char[] myString = unicodeStr.GetChars(data);
-                        string returnText = new string(myString);
-
-                        textBox2.AppendText(returnText);
-                        textBox2.AppendText("\n");
-
-                    }
-                }
+                textBox2.AppendText(apiCall);
+                textBox2.AppendText("\n");
             };
 
-            CustomWindow.Handler wnd3 = delegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+            CustomWindow.Handler wnd3 = delegate(string apiCall)
             {
-                if (msg == 0x004A)
-                {
-                    CustomWindow.COPYDATASTRUCT cds = (CustomWindow.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(CustomWindow.COPYDATASTRUCT));
-                    if (cds.cbData > 0)
-                    {
-                        byte[] data = new byte[cds.cbData];
-                        Marshal.Copy(cds.lpData, data, 0, cds.cbData);
-                        Encoding unicodeStr = Encoding.ASCII;
-                        char[] myString = unicodeStr.GetChars(data);
-                        string returnText = new string(myString);
-
-                        textBox3.AppendText(returnText);
-                        textBox3.AppendText("\n");
-
-                    }
-                }
+                textBox3.AppendText(apiCall);
+                textBox3.AppendText("\n");
             };
 
-            CustomWindow cw1 = new CustomWindow("AHMDSAP1", "Malware1", wnd1);
+            cw1 = new CustomWindow("Malware1", "Malware1", wnd1);
 
-            CustomWindow cw2 = new CustomWindow("AHMDSAP2", "Malware2", wnd2);
+            cw2 = new CustomWindow("Malware2", "Malware2", wnd2);
 
-            CustomWindow cw3 = new CustomWindow("AHMDSAP3", "Malware3", wnd3);
+            cw3 = new CustomWindow("Malware3", "Malware3", wnd3);
+
             
+        }
+
+        CustomWindow cw1;
+        CustomWindow cw2;
+        CustomWindow cw3;
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            cw1.Dispose();
         }
     }
 }
