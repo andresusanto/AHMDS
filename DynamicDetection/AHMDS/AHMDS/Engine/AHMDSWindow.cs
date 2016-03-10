@@ -75,7 +75,7 @@ namespace AHMDS.Engine
         );
 
         private const int ERROR_CLASS_ALREADY_EXISTS = 1410;
-
+        private WNDCLASS wind_class;
         private bool m_disposed;
         private IntPtr m_hwnd;
 
@@ -104,18 +104,27 @@ namespace AHMDS.Engine
             }
         }
 
-        public AHMDSWindow(string class_name, string title, Handler handler)
+        public void subscribeHandler(Handler handler)
+        {
+            this.handler += handler;
+        }
+
+        public void unsubscribeHandler(Handler handler)
+        {
+            this.handler -= handler;
+        }
+
+        public AHMDSWindow(string box_name)
         {
 
-            if (class_name == null) throw new System.Exception("class_name is null");
-            if (class_name == String.Empty) throw new System.Exception("class_name is empty");
+            if (box_name == null) throw new System.Exception("class_name is null");
+            if (box_name == String.Empty) throw new System.Exception("class_name is empty");
 
             m_wnd_proc_delegate = CustomWndProc;
-            this.handler = handler;
-
+            
             // Create WNDCLASS
-            WNDCLASS wind_class = new WNDCLASS();
-            wind_class.lpszClassName = class_name;
+            wind_class = new WNDCLASS();
+            wind_class.lpszClassName = box_name;
             wind_class.lpfnWndProc = System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(m_wnd_proc_delegate);
 
             UInt16 class_atom = RegisterClassW(ref wind_class);
@@ -128,20 +137,7 @@ namespace AHMDS.Engine
             }
 
             // Create window
-            m_hwnd = CreateWindowExW(
-                0,
-                class_name,
-                title,
-                0,
-                0,
-                0,
-                0,
-                0,
-                IntPtr.Zero,
-                IntPtr.Zero,
-                IntPtr.Zero,
-                IntPtr.Zero
-            );
+            m_hwnd = CreateWindowExW(0, box_name, box_name, 0, 0, 0, 0, 0, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
         }
 
         private IntPtr CustomWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
@@ -165,6 +161,6 @@ namespace AHMDS.Engine
         }
 
         private WndProc m_wnd_proc_delegate;
-        private Handler handler;
+        private event Handler handler;
     }
 }

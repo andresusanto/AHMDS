@@ -21,9 +21,16 @@ namespace AHMDS.Engine
         private static Queue<DynamicObject> QueueAnalysis = new Queue<DynamicObject>();
         private static Sandboxie sbx = new Sandboxie(SBIE_DLL_LOC);
 
+        public delegate void ResultHandler(DynamicObject sender, MalwareInfo result);
+        public delegate void StatusHandler(DynamicObject sender);
 
-        public delegate void Handler(MalwareInfo result);
+        private static Dictionary<string, AHMDSWindow> aWindow = new Dictionary<string, AHMDSWindow>() {
+            {SBIE_BOX_NAMES[0], new AHMDSWindow(SBIE_BOX_NAMES[0])},
+            {SBIE_BOX_NAMES[1], new AHMDSWindow(SBIE_BOX_NAMES[1])},
+            {SBIE_BOX_NAMES[2], new AHMDSWindow(SBIE_BOX_NAMES[2])} 
+        };
 
+        
         public static void ProcessQueue()
         {
             foreach (string sandbox in SBIE_BOX_NAMES)
@@ -51,21 +58,38 @@ namespace AHMDS.Engine
             public const int WAITING = 1;
             public const int ANALYZING = 2;
             public const int FINISHED = 3;
-            public int status;
-
             
+            private int status;
             private string image_address = "";
             private string box;
-            private event Handler OnFinished;
+            private event ResultHandler OnFinished;
+            private event StatusHandler OnStatusChanged;
             private Thread analysisThread;
+
+            // hasil analisis
             private List<string> scannedDirectories;
             private List<string> scannedFiles;
+            private List<string> apiCalls;
+            private Dictionary<string, List<string>> registries;
 
-            public DynamicObject(string image_address, Handler handler)
+            public Object storage; // storage yang dapat digunakan untuk menyimpan referensi (untuk update GUI).
+
+            public string Box
+            {
+                get { return box; }
+            }
+
+            public int Status
+            {
+                get { return status; }
+            }
+
+            public DynamicObject(string image_address, ResultHandler resultHandler, StatusHandler statusHandler)
             {
                 this.image_address = image_address;
                 this.status = NOT_STARTED;
-                this.OnFinished += handler;    
+                this.OnFinished += resultHandler;
+                this.OnStatusChanged += statusHandler;
             }
 
             public void Start(string box) // box diletakan disini karena proses Queue yang akan mengassign box
@@ -76,6 +100,9 @@ namespace AHMDS.Engine
                 // bagian cleanup sandbox sebelum digunakan
                 sbx.KillAll(box);
                 Process.Start(SBIE_START_LOC, "/nosbiectrl /silent /box:" + box + " delete_sandbox_silent exit 9").WaitForExit();
+
+                this.apiCalls = new List<string>();
+                aWindow[box].subscribeHandler(apiHandler);
 
                 // bagian eksekusi program
                 Process.Start(SBIE_START_LOC, "/nosbiectrl /hide_window /silent /elevate /box:" + box + " \"" + image_address + "\""); //: /hide_window
@@ -88,37 +115,74 @@ namespace AHMDS.Engine
             {
                 analysisThread.Abort();
                 sbx.KillAll(box);
-                this.status = FINISHED;
+                aWindow[box].unsubscribeHandler(apiHandler);
+                updateStatus(FINISHED);
                 ACTIVE_SANDBOX[box] = false;
                 ProcessQueue();
             }
 
+            private void updateStatus(int status)
+            {
+                this.status = status;
+                OnStatusChanged(this);
+            }
+
+            private void apiHandler(string apiCall)
+            {
+                this.apiCalls.Add(apiCall);
+            }
+
             private void Analyzer()
             {
-                
-                this.status = WAITING;
+
+                updateStatus(WAITING);
                 Thread.Sleep(1000 * ANALYZE_DURATION);
                 
+                // tidak melakukan apapun sampai selesai waiting. berikan kesempatan malware beraksi.
+
                 sbx.KillAll(box);
-                this.status = ANALYZING;
+                aWindow[box].unsubscribeHandler(apiHandler);
+                updateStatus(ANALYZING);
 
-
-                // TODO: kode analisis
-                // <TBD>
                 this.Scan();
-
-                foreach (string s in scannedDirectories)
-                    Console.WriteLine(s);
-
-                foreach (string s in scannedFiles)
-                    Console.WriteLine(s);
-
-                MalwareInfo result = new MalwareInfo(MalwareInfo.NEGATIVE, "Program doesn't contain malicious behaviour.");
-                OnFinished(result);
-
-                this.status = FINISHED;
+                this.DumpRegistries();
+                MalwareInfo result = this.Analyze();
+                
+                OnFinished(this, result);
+                updateStatus(FINISHED);
                 ACTIVE_SANDBOX[box] = false;
                 ProcessQueue();
+            }
+
+            private MalwareInfo Analyze()
+            {
+                // TODO: perform analysis
+                string folderAddress = Path.GetDirectoryName(this.image_address) + @"\Report of " + Path.GetFileName(this.image_address);
+                if (! Directory.Exists(folderAddress)) Directory.CreateDirectory(folderAddress);
+
+                File.WriteAllLines(folderAddress + @"\apicalls.txt", this.apiCalls);
+                File.WriteAllLines(folderAddress + @"\directories.txt", this.scannedDirectories);
+                File.WriteAllLines(folderAddress + @"\files.txt", this.scannedFiles);
+
+                using (StreamWriter file = new StreamWriter(folderAddress + @"\registries.txt"))
+                {
+                    foreach (KeyValuePair<string, List<string>> entry in this.registries)
+                    {
+                        file.Write('[');
+                        file.Write(entry.Key);
+                        file.WriteLine(']');
+                        
+                        foreach (string konten in entry.Value)
+                        {
+                            file.WriteLine(konten);
+                        }
+
+                        file.WriteLine();
+                    }
+                }
+
+                
+                return new MalwareInfo(MalwareInfo.NEGATIVE, "Program doesn't contain malicious behaviour.");
             }
 
             // scan subdirs and files
@@ -131,7 +195,7 @@ namespace AHMDS.Engine
                 Queue<string> tmpScan = new Queue<string>(Directory.GetDirectories(alamat));
 
                 scannedDirectories.AddRange(tmpScan);
-                scannedFiles.AddRange(Directory.GetFiles(alamat));
+                //scannedFiles.AddRange(Directory.GetFiles(alamat)); // file-file yang ada di root folder sandbox, tidak perlu dianalisis karena milik sandbox
 
                 while (tmpScan.Count > 0)
                 {
@@ -145,12 +209,14 @@ namespace AHMDS.Engine
                     scannedFiles.AddRange(Directory.GetFiles(currentDir));
                 }
 
-
+                // hilangkan alamat sandbox
+                scannedDirectories = scannedDirectories.Select(s => s.Substring(alamat.Length + 1)).ToList();
+                scannedFiles = scannedFiles.Select(s => s.Substring(alamat.Length + 1)).ToList();
             }
 
-            public Dictionary<string, List<string>> DumpRegistries()
+            private void DumpRegistries()
             {
-                Dictionary<string, List<string>> registries = new Dictionary<string, List<string>>();
+                this.registries = new Dictionary<string, List<string>>();
 
                 // copy file RegHive
                 bool fileLocked = true;
@@ -222,7 +288,7 @@ namespace AHMDS.Engine
                                 {
                                     try
                                     {
-                                        registries.Add(keyName, keyContents);
+                                        this.registries.Add(keyName, keyContents);
                                     }
                                     catch (ArgumentException x)
                                     {
@@ -246,7 +312,6 @@ namespace AHMDS.Engine
                     throw new Exception("Fail to dump Registry Hive file. Malware Box: " + box); // gagal dump reghive
                 }
 
-                return registries;
             }
         }
     }

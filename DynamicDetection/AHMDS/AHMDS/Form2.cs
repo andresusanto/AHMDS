@@ -25,22 +25,22 @@ namespace AHMDS
             DynamicAnalyzer.DynamicObject obj1 = null;
             
             // coba sandboxie
-            DynamicAnalyzer.Handler act = delegate(MalwareInfo result)
+            DynamicAnalyzer.ResultHandler act = delegate(DynamicAnalyzer.DynamicObject obj, MalwareInfo result)
             {
-                Dictionary<string, List<string>> hasil = obj1.DumpRegistries();
+                //Dictionary<string, List<string>> hasil = obj1.registries;
 
-                foreach (KeyValuePair<string, List<string>> entry in hasil)
-                {
-                    textBox1.AppendText(entry.Key);
-                    textBox1.AppendText("\r\n=====================================\r\n");
+                //foreach (KeyValuePair<string, List<string>> entry in hasil)
+                //{
+                //    textBox1.AppendText(entry.Key);
+                //    textBox1.AppendText("\r\n=====================================\r\n");
 
-                    foreach (string konten in entry.Value)
-                    {
-                        textBox1.AppendText(konten);
-                        textBox1.AppendText("\r\n");
-                    }
-                    textBox1.AppendText("\r\n");
-                }
+                //    foreach (string konten in entry.Value)
+                //    {
+                //        textBox1.AppendText(konten);
+                //        textBox1.AppendText("\r\n");
+                //    }
+                //    textBox1.AppendText("\r\n");
+                //}
 
                 //textBox1.AppendText("Modified Dirs:\r\n");
                 //foreach (string s in obj1.scannedDirectories)
@@ -60,7 +60,7 @@ namespace AHMDS
                 //MessageBox.Show(result.ResultInformation);
             };
 
-            obj1 = new DynamicAnalyzer.DynamicObject(@"notepad.exe", act);
+            //obj1 = new DynamicAnalyzer.DynamicObject(@"notepad.exe", act);
             //DynamicAnalyzer.DynamicObject obj2 = new DynamicAnalyzer.DynamicObject(@"C:\Python27\python.exe", act);
             //DynamicAnalyzer.DynamicObject obj3 = new DynamicAnalyzer.DynamicObject(@"C:\Python27\python.exe", act);
             //DynamicAnalyzer.DynamicObject obj4 = new DynamicAnalyzer.DynamicObject(@"C:\Python27\python.exe", act);
@@ -68,7 +68,7 @@ namespace AHMDS
             //DynamicAnalyzer.DynamicObject obj6 = new DynamicAnalyzer.DynamicObject(@"C:\Python27\python.exe", act);
 
             
-            DynamicAnalyzer.AddQueue(obj1);
+            //DynamicAnalyzer.AddQueue(obj1);
 
 
             //DynamicAnalyzer.AddQueue(obj2);

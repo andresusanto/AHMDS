@@ -41,11 +41,11 @@ namespace AHMDS
                 textBox3.AppendText("\n");
             };
 
-            cw1 = new AHMDSWindow("Malware1", "Malware1", wnd1);
+            //cw1 = new AHMDSWindow("Malware1", "Malware1", wnd1);
 
-            cw2 = new AHMDSWindow("Malware2", "Malware2", wnd2);
+            //cw2 = new AHMDSWindow("Malware2", "Malware2", wnd2);
 
-            cw3 = new AHMDSWindow("Malware3", "Malware3", wnd3);
+            //cw3 = new AHMDSWindow("Malware3", "Malware3", wnd3);
 
             
         }
