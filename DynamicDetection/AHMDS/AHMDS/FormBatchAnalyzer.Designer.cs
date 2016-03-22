@@ -95,7 +95,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "FormBatchAnalyzer";
-            this.Text = "FormBatchAnalyzer";
+            this.Text = "AHMDS Dynamic Batch Analyzer";
             this.ResumeLayout(false);
             this.PerformLayout();
 

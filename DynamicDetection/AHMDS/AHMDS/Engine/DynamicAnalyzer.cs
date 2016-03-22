@@ -11,8 +11,8 @@ namespace AHMDS.Engine
 {
     class DynamicAnalyzer
     {
-        private const int ANALYZE_DURATION = 5;
-        private const string SBIE_BOX_LOC = @"C:\Sandbox\Andre\"; // must end with \ !!
+        private const int ANALYZE_DURATION = 300;
+        private const string SBIE_BOX_LOC = @"C:\Sandbox\AHMDS\"; // must end with \ !!
         private const string SBIE_DLL_LOC = @"C:\Program Files\Sandboxie\32\SbieDll.dll";
         private const string SBIE_START_LOC = @"C:\Program Files\Sandboxie\Start.exe";
         private static string[] SBIE_BOX_NAMES = new string[3] { "Malware1", "Malware2", "Malware3" };
@@ -245,7 +245,6 @@ namespace AHMDS.Engine
                 string extractResult = p.StandardOutput.ReadToEnd(); // baca hasil proses library
                 p.WaitForExit();
 
-                Console.Out.WriteLine(p.StartInfo.Arguments);
 
                 if (extractResult.Trim().Equals(""))
                 {
