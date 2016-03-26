@@ -10,32 +10,40 @@ namespace AHMDS.Engine
     {
         private const string SWI_HOME_DIR = @"C:\Program Files\swipl";
 
-        public RuleEngine()
+        private static void init()
         {
-            String[] param = { "-q" };  // suppressing informational and banner messages
-            //Environment.SetEnvironmentVariable("SWI_HOME_DIR", SWI_HOME_DIR);
+            String[] param = { "-q" };
             PlEngine.Initialize(param);
         }
 
-        public void tes()
+        public static int CalculateAPICalls(string[] apiCalls)
         {
-            
-            PlQuery.PlCall("assert(father(martin, inka))");
-            PlQuery.PlCall("assert(father(uwe, gloria))");
-            PlQuery.PlCall("assert(father(uwe, melanie))");
-            PlQuery.PlCall("assert(father(uwe, ayala))");
-            using (var q = new PlQuery("father(P, C), atomic_list_concat([P,' is_father_of ',C], L)"))
+            init();
+            StringBuilder sb = new StringBuilder();
+            Console.WriteLine(PlQuery.PlCall("consult('APICallRules.pl')"));
+
+            PlTerm listApi = PlTerm.PlVar();
+            PlTerm tailApi = PlTerm.PlTail(listApi);
+
+            foreach (string api in apiCalls)
+            {
+                sb.Append('"'); sb.Append(api); sb.Append('"');
+                tailApi.Append(PlTerm.PlString(sb.ToString()));
+                sb.Clear();
+            }
+            tailApi.Close();
+
+            sb.Append("score("); sb.Append(listApi.ToString()); sb.Append(", X)");
+            using (var q = new PlQuery(sb.ToString()))
             {
                 foreach (PlQueryVariables v in q.SolutionVariables)
-                    Console.WriteLine(v["L"].ToString());
+                    Console.WriteLine(v["X"].ToString());
 
-                Console.WriteLine("all children from uwe:");
-                q.Variables["P"].Unify("uwe");
-                foreach (PlQueryVariables v in q.SolutionVariables)
-                    Console.WriteLine(v["C"].ToString());
             }
+
             PlEngine.PlCleanup();
-            Console.WriteLine("finshed!");
+            return 0;
         }
+
     }
 }

@@ -19,8 +19,7 @@ namespace AHMDS
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            RuleEngine rule = new RuleEngine();
-            rule.tes();
+            RuleEngine.CalculateAPICalls(new string[4] { "OpenSCManagerW", "OpenSCManagerA", "CreateService", "StartService" });
         }
     }
 }
