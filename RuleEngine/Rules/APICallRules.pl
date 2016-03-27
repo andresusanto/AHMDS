@@ -75,19 +75,31 @@ del_explanation :- retractall(explanation(_)), asserta(explanation([])).
 	i_score([], 0).
 	
 % score keterhubungan (suatu kombinasi API akan menghasilkan skor lebih tinggi dibanding API tersebut jalan secara terpisah2)
-	ml_score(70, ["NtQueryObject", "ObjectAllTypesInformation"]) :- add_explanation(["Program looks for DebugObjects which can point to a debugger being present."]).
-	ml_score(70, ["NtSetInformationThread", "HideThreadFromDebugger"]) :- add_explanation(["Program hides from debugger."]).
-	ml_score(70, ["ZwSetInformationThread", "HideThreadFromDebugger"]) :- add_explanation(["Program hides from debugger."]).
-	ml_score(70, ["SamIConnect", "SamrQueryInformationUser", "SamIGetPrivateData"]) :- add_explanation(["Program grabs user's password."]).
-	ml_score(100, ["GetKeyState", "GetForegroundWindow"]) :- add_explanation(["Program does keylogging activity."]).
-	ml_score(100, ["CreateService", "StartService"]) :- add_explanation(["Program creates and starts a suspicious service."]).
-	ml_score(70, ["OpenProcessToken", "LookupPrivilegeValueA", "AdjustTokenPrivileges"]) :- add_explanation(["Program tries to escalate privileges."]).
-	ml_score(70, ["CreateToolhelp32Snapshot", "Process32First", "Process32Next"]) :- add_explanation(["Program looks for a specific process (to do process injection on, detect a process running i.e. a debugger or anti-virus)."]).
-	ml_score(100, ["SetWindowsHookEx", "UnhookWindowsHookEx"]) :- add_explanation(["Program sets and unsets a hook, usually used to hook root kits."]).
+	ml_score(70, ["NtQueryObject", "ObjectAllTypesInformation"]).
+	ml_score(70, ["NtSetInformationThread", "HideThreadFromDebugger"]).
+	ml_score(70, ["ZwSetInformationThread", "HideThreadFromDebugger"]).
+	ml_score(70, ["SamIConnect", "SamrQueryInformationUser", "SamIGetPrivateData"]).
+	ml_score(100, ["GetAsyncKeyState", "GetForegroundWindow"]).
+	ml_score(100, ["GetKeyState", "GetForegroundWindow"]).
+	ml_score(100, ["CreateService", "StartService"]).
+	ml_score(70, ["OpenProcessToken", "LookupPrivilegeValueA", "AdjustTokenPrivileges"]).
+	ml_score(70, ["CreateToolhelp32Snapshot", "Process32First", "Process32Next"]).
+	ml_score(100, ["SetWindowsHookEx", "UnhookWindowsHookEx"]).
 	
-	al_score(X, Y) :- ml_score(Y, L), subset(L, X).
-	l_score(X, Y) :- aggregate(sum(C), al_score(X, C), Y), !. 
+	ml_explain(["NtQueryObject", "ObjectAllTypesInformation"]) :- add_explanation(["Program looks for DebugObjects which can point to a debugger being present."]).
+	ml_explain(["NtSetInformationThread", "HideThreadFromDebugger"]) :- add_explanation(["Program hides from debugger."]).
+	ml_explain(["ZwSetInformationThread", "HideThreadFromDebugger"]) :- add_explanation(["Program hides from debugger."]).
+	ml_explain(["SamIConnect", "SamrQueryInformationUser", "SamIGetPrivateData"]) :- add_explanation(["Program grabs user's password."]).
+	ml_explain(["GetAsyncKeyState", "GetForegroundWindow"]) :- add_explanation(["Program does keylogging activity."]).
+	ml_explain(["GetKeyState", "GetForegroundWindow"]) :- add_explanation(["Program does keylogging activity."]).
+	ml_explain(["CreateService", "StartService"]) :- add_explanation(["Program creates and starts a suspicious service."]).
+	ml_explain(["OpenProcessToken", "LookupPrivilegeValueA", "AdjustTokenPrivileges"]) :- add_explanation(["Program tries to escalate privileges."]).
+	ml_explain(["CreateToolhelp32Snapshot", "Process32First", "Process32Next"]) :- add_explanation(["Program looks for a specific process (to do process injection on, detect a process running i.e. a debugger or anti-virus)."]).
+	ml_explain(["SetWindowsHookEx", "UnhookWindowsHookEx"]) :- add_explanation(["Program sets and unsets a hook, usually used to hook root kits."]).
+	
+	al_score(X, Y) :- ml_score(Y, L), subset(L, X), ml_explain(L).
+	l_score(X, Y) :- aggregate(sum(C), al_score(X, C), Y) ,!. 
 	l_score(_, 0).
 
 % Fungsi untuk menghitung score total
-	score(X, Y) :- del_explanation, i_score(X, Z), l_score(X, V), Y is Z+V.
+	score(X, Y) :- del_explanation, l_score(X, V), i_score(X, Z), Y is Z+V.

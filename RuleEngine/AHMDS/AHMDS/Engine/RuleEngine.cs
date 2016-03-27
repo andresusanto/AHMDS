@@ -16,8 +16,23 @@ namespace AHMDS.Engine
             PlEngine.Initialize(param);
         }
 
-        public static int CalculateAPICalls(string[] apiCalls)
+        public class CalculationResult
         {
+            public int Score;
+            public List<String> Explanation;
+
+            public CalculationResult(int score, List<string> explanation)
+            {
+                this.Score = score;
+                this.Explanation = explanation;
+            }
+        }
+
+        public static CalculationResult CalculateAPICalls(string[] apiCalls)
+        {
+            int score = 0;
+            List<string> explanation = new List<string>();
+
             init();
             StringBuilder sb = new StringBuilder();
             Console.WriteLine(PlQuery.PlCall("consult('APICallRules.pl')"));
@@ -34,15 +49,19 @@ namespace AHMDS.Engine
             tailApi.Close();
 
             sb.Append("score("); sb.Append(listApi.ToString()); sb.Append(", X)");
+
             using (var q = new PlQuery(sb.ToString()))
             {
-                foreach (PlQueryVariables v in q.SolutionVariables)
-                    Console.WriteLine(v["X"].ToString());
+                score = Int32.Parse(q.SolutionVariables.First()["X"].ToString());
+            }
 
+            using (var q = new PlQuery("explanation(X)"))
+            {
+                explanation.AddRange(q.SolutionVariables.First()["X"].ToListString());
             }
 
             PlEngine.PlCleanup();
-            return 0;
+            return new CalculationResult(score, explanation);
         }
 
     }

@@ -19,7 +19,14 @@ namespace AHMDS
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            RuleEngine.CalculateAPICalls(new string[4] { "OpenSCManagerW", "OpenSCManagerA", "CreateService", "StartService" });
+            RuleEngine.CalculationResult result = RuleEngine.CalculateAPICalls(new string[2] { "GetAsyncKeyState", "GetKeyState" });
+            Console.Write("Skor: ");
+            Console.WriteLine(result.Score);
+
+            Console.WriteLine("Penjelasan :");
+
+            foreach (String s in result.Explanation)
+                Console.WriteLine(s);
         }
     }
 }
