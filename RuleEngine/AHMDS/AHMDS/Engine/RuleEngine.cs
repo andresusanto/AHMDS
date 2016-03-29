@@ -9,11 +9,21 @@ namespace AHMDS.Engine
     class RuleEngine
     {
         private const string SWI_HOME_DIR = @"C:\Program Files\swipl";
+        private static Dictionary<string, List<string>> startupRegistries; // menyimpan daftar registry yang biasa digunakan oleh malware untuk startup
+        private static Dictionary<string, List<string>> suspiciousRegistries; // meyimpan daftar registry yang biasa digunakan oleh malware untuk melakukan kegiatan malicious. elemen List<string> [ count ] adalah penjelasan
 
-        private static void init()
+        private static void initAPI()
         {
             String[] param = { "-q" };
             PlEngine.Initialize(param);
+        }
+
+        private static void initRegistries()
+        {
+            if (startupRegistries == null)
+            {
+
+            }
         }
 
         public class CalculationResult
@@ -33,7 +43,7 @@ namespace AHMDS.Engine
             int score = 0;
             List<string> explanation = new List<string>();
 
-            init();
+            initAPI();
             StringBuilder sb = new StringBuilder();
             Console.WriteLine(PlQuery.PlCall("consult('APICallRules.pl')"));
 
@@ -62,6 +72,11 @@ namespace AHMDS.Engine
 
             PlEngine.PlCleanup();
             return new CalculationResult(score, explanation);
+        }
+
+        public static CalculationResult CalculateRegistries(Dictionary<string, List<string>> registries)
+        {
+
         }
 
     }
