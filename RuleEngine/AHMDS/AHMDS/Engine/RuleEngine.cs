@@ -124,10 +124,51 @@ namespace AHMDS.Engine
             return new CalculationResult(score, explanation);
         }
 
+        private static List<string> generateRelevantKeys(Dictionary<string, List<string>> list, string key)
+        {
+            List<string> relevant = new List<string>();
+
+            foreach (KeyValuePair<string, List<string>> entry in list)
+            {
+                if (entry.Key.Equals(key)) 
+                    relevant.Add(entry.Key);
+                else if (key.EndsWith("\\") && entry.Key.StartsWith(key))
+                    relevant.Add(entry.Key);
+            }
+
+            return relevant;
+        }
+
         public static CalculationResult CalculateRegistries(Dictionary<string, List<string>> registries)
         {
+            CalculationResult result = new CalculationResult(0, new List<string>());
             initRegistries();
-            return null;
+
+            foreach (KeyValuePair<string, List<string>> entry in startupRegistries)
+            {
+                List<string> relevant = generateRelevantKeys(registries, entry.Key);
+
+                foreach (string reg in relevant)
+                {
+                    if (entry.Value == null)
+                    {
+                        result.Score += 100;
+                        result.Explanation.Add("Startup registry detected at " + reg);
+                    }
+                    else
+                    {
+                        foreach (string key in entry.Value)
+                        {
+                            if (registries[reg].Contains(key))
+                            {
+                                result.Score += 100;
+                                result.Explanation.Add("Startup registry detected at " + reg + ", " + key);
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
         }
 
     }
