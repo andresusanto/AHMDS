@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SbsSW.SwiPlCs;
+using System.IO;
 
 namespace AHMDS.Engine
 {
     class RuleEngine
     {
         private const string SWI_HOME_DIR = @"C:\Program Files\swipl";
+        private const string API_RULES_NAME = @"APICallRules.pl";
+        private const string REG_START_RULES_NAME = @"RegistriesStart.txt";
+        private const string REG_SUSPICIOUS_RULES_NAME = @"RegistriesSuspicious.txt";
+
         private static Dictionary<string, List<string>> startupRegistries; // menyimpan daftar registry yang biasa digunakan oleh malware untuk startup
         private static Dictionary<string, List<string>> suspiciousRegistries; // meyimpan daftar registry yang biasa digunakan oleh malware untuk melakukan kegiatan malicious. elemen List<string> [ count ] adalah penjelasan
 
@@ -22,7 +27,52 @@ namespace AHMDS.Engine
         {
             if (startupRegistries == null)
             {
+                // baca registry registry startup malware
+                startupRegistries = new Dictionary<string, List<string>>();
+                StreamReader reader = new StreamReader(REG_START_RULES_NAME);
+                do
+                {
+                    string[] content = reader.ReadLine().Split(',');
 
+                    if (content.Length == 1)
+                    {
+                        startupRegistries.Add(content[0], null);
+                    }
+                    else
+                    {
+                        List<string> keyList = new List<string>();
+                        for (int i = 1; i < content.Length; i++)
+                            keyList.Add(content[i]);
+
+                        startupRegistries.Add(content[0], keyList);
+                    }
+                    
+                } while (reader.Peek() != -1);
+                reader.Close();
+
+
+                // baca registry-registry yang mencurigakan
+                suspiciousRegistries = new Dictionary<string, List<string>>();
+                reader = new StreamReader(REG_SUSPICIOUS_RULES_NAME);
+                do{
+                    string[] content = reader.ReadLine().Split(',');
+                    List<string> keyList = new List<string>();
+                    
+                    if (content.Length == 2)
+                    {
+                        keyList.Add(content[0]);
+                        suspiciousRegistries.Add(content[1], keyList);
+                    }
+                    else
+                    {
+                        for (int i = 2; i < content.Length; i++)
+                            keyList.Add(content[i]);
+
+                        keyList.Add(content[0]);
+                        suspiciousRegistries.Add(content[1], keyList);
+                    }
+                }while(reader.Peek() != -1);
+                reader.Close();
             }
         }
 
@@ -45,7 +95,7 @@ namespace AHMDS.Engine
 
             initAPI();
             StringBuilder sb = new StringBuilder();
-            Console.WriteLine(PlQuery.PlCall("consult('APICallRules.pl')"));
+            Console.WriteLine(PlQuery.PlCall("consult('" + API_RULES_NAME + "')"));
 
             PlTerm listApi = PlTerm.PlVar();
             PlTerm tailApi = PlTerm.PlTail(listApi);
@@ -76,7 +126,8 @@ namespace AHMDS.Engine
 
         public static CalculationResult CalculateRegistries(Dictionary<string, List<string>> registries)
         {
-
+            initRegistries();
+            return null;
         }
 
     }

@@ -27,6 +27,8 @@ namespace AHMDS
 
             foreach (String s in result.Explanation)
                 Console.WriteLine(s);
+
+            RuleEngine.CalculateRegistries(null);
         }
     }
 }
