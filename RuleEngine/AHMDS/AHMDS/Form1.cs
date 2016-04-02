@@ -20,13 +20,8 @@ namespace AHMDS
         private void Form1_Load(object sender, EventArgs e)
         {
             RuleEngine.CalculationResult result = RuleEngine.CalculateAPICalls(new string[2] { "GetAsyncKeyState", "GetKeyState" });
-            Console.Write("Skor: ");
-            Console.WriteLine(result.Score);
-
-            Console.WriteLine("Penjelasan :");
-
             foreach (String s in result.Explanation)
-                Console.WriteLine(s);
+                textBox1.AppendText(s + "\n");
 
             Dictionary<string, List<string>> registry = new Dictionary<string,List<string>>();
 
@@ -53,13 +48,8 @@ namespace AHMDS
 
             RuleEngine.CalculationResult resReg = RuleEngine.CalculateRegistries(registry);
 
-            Console.Write("Skor: ");
-            Console.WriteLine(resReg.Score);
-
-            Console.WriteLine("Penjelasan :");
-
             foreach (String s in resReg.Explanation)
-                Console.WriteLine(s);
+                textBox1.AppendText(s + "\n");
 
             List<string> fileList = new List<string>();
             fileList.Add(@"drive\D\SAMPEL\theZoo-master\Ransomware.Locky\Locky.exe");
@@ -90,13 +80,10 @@ namespace AHMDS
 
             RuleEngine.CalculationResult resFile = RuleEngine.CalculateFiles(fileList);
 
-            Console.Write("Skor: ");
-            Console.WriteLine(resFile.Score);
-
-            Console.WriteLine("Penjelasan :");
-
             foreach (String s in resFile.Explanation)
-                Console.WriteLine(s);
+                textBox1.AppendText(s + "\n");
+
+            label2.Text = "" + (result.Score + resReg.Score + resFile.Score);
         }
     }
 }
