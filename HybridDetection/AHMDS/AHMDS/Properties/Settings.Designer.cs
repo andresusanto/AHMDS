@@ -98,5 +98,17 @@ namespace AHMDS.Properties {
                 this["SandboxNames"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\swipl")]
+        public string SWIPath {
+            get {
+                return ((string)(this["SWIPath"]));
+            }
+            set {
+                this["SWIPath"] = value;
+            }
+        }
     }
 }

@@ -1,0 +1,35 @@
+root
+user\current\software\microsoft\windows\currentversion\explorer\shell folders,startup,common startup
+user\current\software\microsoft\windows\currentversion\explorer\user shell folders,startup,common startup
+machine\software\microsoft\windows\currentversion\run
+machine\software\microsoft\windows\currentversion\runonce
+user\current\software\microsoft\windows\currentversion\run
+user\current\software\microsoft\windows\currentversion\runonce
+machine\software\classes\batfile\shell\open\command 
+machine\software\classes\comfile\shell\open\command 
+machine\software\classes\exefile\shell\open\command 
+machine\software\classes\htafile\shell\open\command 
+machine\software\classes\piffile\shell\open\command
+machine\software\microsoft\windows nt\currentversion\winlogon
+machine\software\microsoft\active setup\installed components\
+user\current\software\microsoft\active setup\installed components\
+machine\software\microsoft\windows nt\currentversion\winlogon\notify
+user\current\software\microsoft\windows nt\currentversion\windows
+machine\software\microsoft\windows\currentversion\policies
+user\current\software\microsoft\windows\currentversion\policies
+machine\software\wow6432node\microsoft\windows\currentversion\run
+machine\software\microsoft\windows nt\currentversion\terminal server
+user\current\software\microsoft\windows nt\currentversion\terminal server
+machine\software\microsoft\windows nt\currentversion\windows,appinit_dlls
+machine\software\microsoft\windows\currentversion\shellserviceobjectdelayload
+user\current\software\microsoft\windows\currentversion\shellserviceobjectdelayload
+machine\software\policies\microsoft\windows\system\scripts,startup
+machine\software\microsoft\windows\currentversion\explorer\shellexecutehooks
+machine\system\currentcontrolset\control\securityproviders
+machine\software\microsoft\windows\currentversion\explorer\sharedtaskscheduler
+machine\software\microsoft\windows\currentversion\policies\explorer\run
+user\current\software\microsoft\windows\currentversion\policies\explorer\run
+user\current\software\microsoft\windows\currentversion\policies\system\shell
+user\control panel\desktop
+machine\system\currentcontrolset\control\session manager,execute,setupexecute,s0initialcommand
+machine\software\wow6432node\microsoft\windows nt\currentversion\winlogon

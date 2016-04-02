@@ -30,5 +30,8 @@
   &lt;string&gt;Malware3&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
+    <Setting Name="SWIPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\swipl</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

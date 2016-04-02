@@ -15,7 +15,7 @@ namespace AHMDS
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormBatchAnalyzer());
+            Application.Run(new Form1());
         }
     }
 }

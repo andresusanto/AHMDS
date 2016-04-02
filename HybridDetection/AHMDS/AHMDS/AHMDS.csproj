@@ -30,7 +30,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -52,6 +52,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SwiPlCs">
+      <HintPath>Libs\SwiPlCs.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -72,6 +75,7 @@
     <Compile Include="Engine\AHMDSWindow.cs" />
     <Compile Include="Engine\DynamicAnalyzer.cs" />
     <Compile Include="Engine\MalwareInfo.cs" />
+    <Compile Include="Engine\RuleEngine.cs" />
     <Compile Include="Engine\Sandboxie.cs" />
     <Compile Include="Engine\StaticAnalyzer.cs" />
     <Compile Include="Engine\WinTrust.cs" />
@@ -126,6 +130,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Rules\APICallRules.pl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -139,6 +146,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Libs\SE.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\FilesystemRules.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\RegistriesStart.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\RegistriesSuspicious.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
