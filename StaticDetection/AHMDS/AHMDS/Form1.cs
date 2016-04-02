@@ -77,6 +77,7 @@ namespace AHMDS
                         }
                         else
                         {
+                            
                             MessageBox.Show("Verified Program:\n" + nama + "\n\n" + cert.Subject + "\n\n" + cert.Handle);
                         }
                     //}

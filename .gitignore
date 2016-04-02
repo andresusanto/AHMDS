@@ -3,6 +3,7 @@
 
 # file database yang besar
 av.accdb
+ahmds.accdb
 ClamAV Definitions/
 StaticDetection/perl/
 
@@ -284,3 +285,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
