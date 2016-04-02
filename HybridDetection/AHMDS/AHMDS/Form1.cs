@@ -40,6 +40,7 @@ namespace AHMDS
                 tmp.AddRange(expandFolder(s));
             }
 
+            tmp.Add(alamat);
 
             return tmp;
         }
@@ -47,7 +48,8 @@ namespace AHMDS
         private void scan()
         {
             StaticAnalyzer staticanalyzer = new StaticAnalyzer();
-            List<string> antriFolder = expandFolder(@"D:\Project\AV\SAMPLES");
+            //List<string> antriFolder = expandFolder(@"D:\Project\AV\SAMPLES");
+            List<string> antriFolder = expandFolder(@"D:\Project\AV\trusted");
             long check = 0;
 
             foreach (string a in antriFolder)
@@ -60,24 +62,40 @@ namespace AHMDS
 
                     check++;
 
-                    X509Certificate cert = WinTrust.GetVerifiedCert(nama);
-                    if (cert == null)
+
+                    if (staticanalyzer.Verify(nama))
                     {
-
-                        label1.Text = "Scanning " + nama;
-
-                        MalwareInfo result = staticanalyzer.Check(nama);
-
-                        if (result.ResultCode == MalwareInfo.POSITIVE)
-                        {
-                            listBox1.Items.Add(nama + " --> " + result.ResultInformation);
-                        }
+                        textBox1.AppendText(nama);
+                        textBox1.AppendText("\r\n");
                     }
                     else
                     {
-
-                        MessageBox.Show("Verified Program:\n" + nama + "\n\n" + cert.Subject + "\n\n" + cert.Handle);
+                        textBox2.AppendText(nama);
+                        textBox2.AppendText("\r\n");
                     }
+
+                    //X509Certificate cert = WinTrust.GetVerifiedCert(nama);
+                    //if (cert == null)
+                    //{
+
+                    //    label1.Text = "Scanning " + nama;
+
+                    //    MalwareInfo result = staticanalyzer.Check(nama);
+
+                    //    if (result.ResultCode == MalwareInfo.POSITIVE)
+                    //    {
+                    //        listBox1.Items.Add(nama + " --> " + result.ResultInformation);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    textBox1.AppendText(cert.Subject);
+                    //    textBox1.AppendText("\r\n");
+
+                    //    textBox2.AppendText(cert.Issuer);
+                    //    textBox2.AppendText("\r\n");
+                    //    //MessageBox.Show("Verified Program:\n" + nama + "\n\n" + cert.Subject + "\n\n" + cert.Handle);
+                    //}
                     //}
                 }
             }

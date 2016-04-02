@@ -6,19 +6,34 @@ using AHMDS.DB.ahmdsDataSetTableAdapters;
 using System.IO;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace AHMDS.Engine
 {
     public class StaticAnalyzer
     {
         private signatureTableAdapter SignatureTAdapter;
+        private verifiedTableAdapter VerifiedTAdapter;
         private MD5 Md5;
 
         // fungsi inisiasi pendeteksian statis
         public StaticAnalyzer()
         {
             SignatureTAdapter = new signatureTableAdapter();
+            VerifiedTAdapter = new verifiedTableAdapter();
             Md5 = MD5.Create();
+        }
+
+        public bool Verify(string fileName)
+        {
+            X509Certificate cert = WinTrust.GetVerifiedCert(fileName);
+            
+            if (cert != null){
+                AHMDS.DB.ahmdsDataSet.verifiedDataTable result = VerifiedTAdapter.GetDataBySubjectIssuer(cert.Subject, cert.Issuer);
+                if (result.Count > 0) return true;
+            }
+            
+            return false;
         }
 
         public MalwareInfo Check(string FileName)

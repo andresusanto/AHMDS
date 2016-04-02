@@ -13,5 +13,22 @@
     <Setting Name="PerlLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)">D:\Project\AHMDS\StaticDetection\perl\bin\perl.exe</Value>
     </Setting>
+    <Setting Name="SandboxieBoxLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Sandbox\Andre\</Value>
+    </Setting>
+    <Setting Name="SandboxieDllLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\Sandboxie\32\SbieDll.dll</Value>
+    </Setting>
+    <Setting Name="SandboxieExeLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\Sandboxie\Start.exe</Value>
+    </Setting>
+    <Setting Name="SandboxNames" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;Malware1&lt;/string&gt;
+  &lt;string&gt;Malware2&lt;/string&gt;
+  &lt;string&gt;Malware3&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

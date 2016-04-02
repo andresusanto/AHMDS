@@ -45,5 +45,58 @@ namespace AHMDS.Properties {
                 this["PerlLocation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Sandbox\\Andre\\")]
+        public string SandboxieBoxLocation {
+            get {
+                return ((string)(this["SandboxieBoxLocation"]));
+            }
+            set {
+                this["SandboxieBoxLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Sandboxie\\32\\SbieDll.dll")]
+        public string SandboxieDllLocation {
+            get {
+                return ((string)(this["SandboxieDllLocation"]));
+            }
+            set {
+                this["SandboxieDllLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Sandboxie\\Start.exe")]
+        public string SandboxieExeLocation {
+            get {
+                return ((string)(this["SandboxieExeLocation"]));
+            }
+            set {
+                this["SandboxieExeLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>Malware1</string>
+  <string>Malware2</string>
+  <string>Malware3</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection SandboxNames {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["SandboxNames"]));
+            }
+            set {
+                this["SandboxNames"] = value;
+            }
+        }
     }
 }

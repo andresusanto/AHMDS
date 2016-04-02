@@ -48,6 +48,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,7 +69,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ahmdsDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Engine\AHMDSWindow.cs" />
+    <Compile Include="Engine\DynamicAnalyzer.cs" />
     <Compile Include="Engine\MalwareInfo.cs" />
+    <Compile Include="Engine\Sandboxie.cs" />
     <Compile Include="Engine\StaticAnalyzer.cs" />
     <Compile Include="Engine\WinTrust.cs" />
     <Compile Include="Form1.cs">
@@ -75,10 +81,19 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\FormBatchAnalyzer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\FormBatchAnalyzer.designer.cs">
+      <DependentUpon>FormBatchAnalyzer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\FormBatchAnalyzer.resx">
+      <DependentUpon>FormBatchAnalyzer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -90,6 +105,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="app.config" />
+    <None Include="app.manifest" />
     <None Include="DB\ahmdsDataSet.xsc">
       <DependentUpon>ahmdsDataSet.xsd</DependentUpon>
     </None>
@@ -111,14 +127,15 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GUI\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="DB\ahmds.accdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Libs\hapi.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libs\regexport.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Libs\SE.dll">
