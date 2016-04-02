@@ -84,6 +84,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FilesystemRules.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="RegistriesStart.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

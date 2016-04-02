@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SbsSW.SwiPlCs;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace AHMDS.Engine
 {
@@ -11,11 +12,13 @@ namespace AHMDS.Engine
     {
         private const string SWI_HOME_DIR = @"C:\Program Files\swipl";
         private const string API_RULES_NAME = @"APICallRules.pl";
+        private const string FILE_RULES_NAME = @"FilesystemRules.txt";
         private const string REG_START_RULES_NAME = @"RegistriesStart.txt";
         private const string REG_SUSPICIOUS_RULES_NAME = @"RegistriesSuspicious.txt";
 
         private static Dictionary<string, List<string>> startupRegistries; // menyimpan daftar registry yang biasa digunakan oleh malware untuk startup
         private static Dictionary<string, List<string>> suspiciousRegistries; // meyimpan daftar registry yang biasa digunakan oleh malware untuk melakukan kegiatan malicious. elemen List<string> [ count ] adalah penjelasan
+        private static List<FilesystemRule> suspiciousFiles;
 
         private static void initAPI()
         {
@@ -76,6 +79,50 @@ namespace AHMDS.Engine
             }
         }
 
+        private static void initFiles()
+        {
+            if (suspiciousFiles == null)
+            {
+                suspiciousFiles = new List<FilesystemRule>();
+                StreamReader reader = new StreamReader(FILE_RULES_NAME);
+                do
+                {
+                    string[] content = reader.ReadLine().Split(',');
+                    suspiciousFiles.Add(new FilesystemRule(Int32.Parse(content[0]), content[1], content[2]));
+                } while (reader.Peek() != -1);
+                reader.Close();
+            }
+        }
+
+        private static List<string> generateRelevantKeys(Dictionary<string, List<string>> list, string key)
+        {
+            List<string> relevant = new List<string>();
+
+            foreach (KeyValuePair<string, List<string>> entry in list)
+            {
+                if (entry.Key.Equals(key))
+                    relevant.Add(entry.Key);
+                else if (key.EndsWith("\\") && entry.Key.StartsWith(key))
+                    relevant.Add(entry.Key);
+            }
+
+            return relevant;
+        }
+
+        private class FilesystemRule
+        {
+            public int score;
+            public string pattern;
+            public string explanation;
+
+            public FilesystemRule(int score, string explanation, string pattern)
+            {
+                this.score = score;
+                this.explanation = explanation;
+                this.pattern = pattern;
+            }
+        }
+
         public class CalculationResult
         {
             public int Score;
@@ -100,6 +147,7 @@ namespace AHMDS.Engine
             PlTerm listApi = PlTerm.PlVar();
             PlTerm tailApi = PlTerm.PlTail(listApi);
 
+            // membuat list dari apiCalls
             foreach (string api in apiCalls)
             {
                 sb.Append('"'); sb.Append(api); sb.Append('"');
@@ -110,11 +158,13 @@ namespace AHMDS.Engine
 
             sb.Append("score("); sb.Append(listApi.ToString()); sb.Append(", X)");
 
+            // lakukan query ke knowledge dengan list yang dibentuk
             using (var q = new PlQuery(sb.ToString()))
             {
                 score = Int32.Parse(q.SolutionVariables.First()["X"].ToString());
             }
 
+            // query explanation yang dihasilkan
             using (var q = new PlQuery("explanation(X)"))
             {
                 explanation.AddRange(q.SolutionVariables.First()["X"].ToListString());
@@ -122,21 +172,6 @@ namespace AHMDS.Engine
 
             PlEngine.PlCleanup();
             return new CalculationResult(score, explanation);
-        }
-
-        private static List<string> generateRelevantKeys(Dictionary<string, List<string>> list, string key)
-        {
-            List<string> relevant = new List<string>();
-
-            foreach (KeyValuePair<string, List<string>> entry in list)
-            {
-                if (entry.Key.Equals(key)) 
-                    relevant.Add(entry.Key);
-                else if (key.EndsWith("\\") && entry.Key.StartsWith(key))
-                    relevant.Add(entry.Key);
-            }
-
-            return relevant;
         }
 
         public static CalculationResult CalculateRegistries(Dictionary<string, List<string>> registries)
@@ -196,6 +231,26 @@ namespace AHMDS.Engine
                     
                 }
             }
+            return result;
+        }
+
+        public static CalculationResult CalculateFiles(List<string> fileNames)
+        {
+            CalculationResult result = new CalculationResult(0, new List<string>());
+            initFiles();
+
+            foreach (string fileName in fileNames)
+            {
+                foreach (FilesystemRule rule in suspiciousFiles)
+                {
+                    if (new Regex(rule.pattern, RegexOptions.IgnoreCase).IsMatch(fileName))
+                    {
+                        result.Score += rule.score;
+                        result.Explanation.Add(rule.explanation + " (Found at: " + fileName + ")");
+                    }
+                }
+            }
+
             return result;
         }
 

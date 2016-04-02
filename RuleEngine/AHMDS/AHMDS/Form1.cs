@@ -60,6 +60,43 @@ namespace AHMDS
 
             foreach (String s in resReg.Explanation)
                 Console.WriteLine(s);
+
+            List<string> fileList = new List<string>();
+            fileList.Add(@"drive\D\SAMPEL\theZoo-master\Ransomware.Locky\Locky.exe");
+            fileList.Add(@"drive\C\Windows\System32\Ransomware.Locky\Locky.exe");
+            fileList.Add(@"user\current\AppData\Local\Temp\svchost.exe");
+            fileList.Add(@"user\current\AppData\Roaming\Microsoft\Windows\Cookies\index.dat");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Windows\History\History.IE5\index.dat");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Windows\Temporary Internet Files\Content.IE5\index.dat");
+            fileList.Add(@"user\current\AppData\Local\Temp\mcwsazmq.exe");
+            fileList.Add(@"user\current\AppData\Local\Temp\setup.dat");
+            fileList.Add(@"user\current\AppData\Local\Temp\Winlogon.exe");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Feeds Cache\jusched.exe");
+            fileList.Add(@"user\current\AppData\Roaming\Microsoft\Windows\Cookies\CDProxyServ.exe");
+            fileList.Add(@"user\current\AppData\Roaming\Microsoft\Windows\PrivacIE\index.dat");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Feeds\{5588ACFD-6436-411B-A5CE-666AE6A92D3D}~\WebSlices~\Suggested Sites~.feed-ms");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Feeds\{5588ACFD-6436-411B-A5CE-666AE6A92D3D}~\WebSlices~\Web Slice Gallery~.feed-ms");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Windows\History\History.IE5\index.dat");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Windows\Temporary Internet Files\Content.IE5\index.dat");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Internet Explorer\Recovery\High\Active\RecoveryStore.{22C331BF-E6DA-11E5-AC19-00155D03580B}.dat");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Internet Explorer\Recovery\High\Active\{22C331C0-E6DA-11E5-AC19-00155D03580B}.dat");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Windows\History\History.IE5\MSHist012016031020160311\index.dat");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Windows\Temporary Internet Files\Content.IE5\DO1V1PMJ\SN[1].png");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\Windows\Temporary Internet Files\Content.IE5\OVSH3WQL\favicon[2].png");
+            fileList.Add(@"drive\C\Program Files (x86)\Windows Portable Devices\vwwtOaMP.exe");
+            fileList.Add(@"user\current\AppData\Local\Microsoft\AbJcHdcZ.exe");
+            fileList.Add(@"user\current\AppData\Local\Temp\NyQoIZFK.exe");
+            fileList.Add(@"user\current\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\rQdrzdRY.exe");
+
+            RuleEngine.CalculationResult resFile = RuleEngine.CalculateFiles(fileList);
+
+            Console.Write("Skor: ");
+            Console.WriteLine(resFile.Score);
+
+            Console.WriteLine("Penjelasan :");
+
+            foreach (String s in resFile.Explanation)
+                Console.WriteLine(s);
         }
     }
 }
