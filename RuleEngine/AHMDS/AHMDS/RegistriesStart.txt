@@ -32,4 +32,4 @@ user\current\software\microsoft\windows\currentversion\policies\explorer\run
 user\current\software\microsoft\windows\currentversion\policies\system\shell
 user\control panel\desktop
 machine\system\currentcontrolset\control\session manager,execute,setupexecute,s0initialcommand
-machine\software\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Winlogon
+machine\software\wow6432node\microsoft\windows nt\currentversion\winlogon

@@ -43,6 +43,14 @@ namespace AHMDS
             registry.Add(@"user\current\software\microsoft\windows\currentversion\explorer\shell folders", entry);
             registry.Add(@"machine\software\microsoft\active setup\installed components\{123123132-123123}\component\run", entry);
 
+
+            registry.Add(@"machine\system\currentcontrolset\control\session manager\knowndlls", entry);
+
+            entry = new List<string>();
+            entry.Add("pendingfilerenameoperations");
+
+            registry.Add(@"machine\system\currentcontrolset\control\session manager", entry);
+
             RuleEngine.CalculationResult resReg = RuleEngine.CalculateRegistries(registry);
 
             Console.Write("Skor: ");

@@ -144,6 +144,7 @@ namespace AHMDS.Engine
             CalculationResult result = new CalculationResult(0, new List<string>());
             initRegistries();
 
+            // melakukan perhitungan terhadap registry-registry startup malware
             foreach (KeyValuePair<string, List<string>> entry in startupRegistries)
             {
                 List<string> relevant = generateRelevantKeys(registries, entry.Key);
@@ -166,6 +167,33 @@ namespace AHMDS.Engine
                             }
                         }
                     }
+                }
+            }
+
+            // melakukan perhitungan terhadap registry-registry mencurigakan malware
+            foreach (KeyValuePair<string, List<string>> entry in suspiciousRegistries)
+            {
+                List<string> relevant = generateRelevantKeys(registries, entry.Key);
+
+                foreach (string reg in relevant)
+                {
+                    if (entry.Value.Count == 1)
+                    {
+                        result.Score += 150;
+                        result.Explanation.Add(entry.Value[0]);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < entry.Value.Count - 1; i++)
+                        {
+                            if (registries[reg].Contains(entry.Value[i]))
+                            {
+                                result.Score += 150;
+                                result.Explanation.Add(entry.Value[entry.Value.Count - 1] + " (val:" + entry.Value[i] + ")");
+                            }
+                        }
+                    }
+                    
                 }
             }
             return result;

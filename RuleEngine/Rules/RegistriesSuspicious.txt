@@ -1,2 +1,2 @@
 Program renames system files on windows reboot via REG Session Manager,machine\system\currentcontrolset\control\session manager,pendingfilerenameoperations
-Steal legit dlls place via REG Session Manager,machine\system\currentcontrolset\control\session manager\knowndlls
+Program steals legit dlls place via REG Session Manager,machine\system\currentcontrolset\control\session manager\knowndlls
