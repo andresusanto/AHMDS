@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormBatchAnalyzer));
             this.txtAddr = new System.Windows.Forms.TextBox();
             this.btnScan = new System.Windows.Forms.Button();
             this.lstAnalyze = new System.Windows.Forms.ListView();
@@ -93,6 +94,7 @@
             this.Controls.Add(this.btnScan);
             this.Controls.Add(this.txtAddr);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "FormBatchAnalyzer";
             this.Text = "AHMDS Dynamic Batch Analyzer";
