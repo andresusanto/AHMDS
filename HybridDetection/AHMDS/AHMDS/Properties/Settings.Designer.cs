@@ -101,7 +101,7 @@ namespace AHMDS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\swipl")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\swipl")]
         public string SWIPath {
             get {
                 return ((string)(this["SWIPath"]));

@@ -10,9 +10,9 @@ using System.Collections.Specialized;
 
 namespace AHMDS.Engine
 {
-    class DynamicAnalyzer
+    public class DynamicAnalyzer : Analyzer
     {
-        private const int ANALYZE_DURATION = 300;
+        private const int ANALYZE_DURATION = 10;
         private static string SBIE_BOX_LOC = Properties.Settings.Default.SandboxieBoxLocation; //@"C:\Sandbox\AHMDS\"; // must end with \ !!
         private static string SBIE_DLL_LOC = Properties.Settings.Default.SandboxieDllLocation; //@"C:\Program Files\Sandboxie\32\SbieDll.dll";
         private static string SBIE_START_LOC = Properties.Settings.Default.SandboxieExeLocation; //@"C:\Program Files\Sandboxie\Start.exe";
@@ -22,9 +22,7 @@ namespace AHMDS.Engine
         private static Queue<DynamicObject> QueueAnalysis = new Queue<DynamicObject>();
         private static Sandboxie sbx = new Sandboxie(SBIE_DLL_LOC);
 
-        public delegate void ResultHandler(DynamicObject sender, MalwareInfo result);
-        public delegate void StatusHandler(DynamicObject sender);
-
+        
         private static Dictionary<string, AHMDSWindow> aWindow = new Dictionary<string, AHMDSWindow>() {
             {SBIE_BOX_NAMES[0], new AHMDSWindow(SBIE_BOX_NAMES[0])},
             {SBIE_BOX_NAMES[1], new AHMDSWindow(SBIE_BOX_NAMES[1])},
@@ -52,7 +50,7 @@ namespace AHMDS.Engine
         }
         
         // kelas untuk menangani objek yang dianalisis
-        public class DynamicObject
+        public class DynamicObject : AnalyzedObject
         {
             // bagian yang berkaitan dengan status engine
             public const int NOT_STARTED = 0;
@@ -60,11 +58,7 @@ namespace AHMDS.Engine
             public const int ANALYZING = 2;
             public const int FINISHED = 3;
             
-            private int status;
-            private string image_address = "";
             private string box;
-            private event ResultHandler OnFinished;
-            private event StatusHandler OnStatusChanged;
             private Thread analysisThread;
 
             // hasil analisis
@@ -72,8 +66,6 @@ namespace AHMDS.Engine
             private List<string> scannedFiles;
             private List<string> apiCalls;
             private Dictionary<string, List<string>> registries;
-
-            public Object storage; // storage yang dapat digunakan untuk menyimpan referensi (untuk update GUI).
 
             public string Box
             {
@@ -122,15 +114,11 @@ namespace AHMDS.Engine
                 ProcessQueue();
             }
 
-            private void updateStatus(int status)
-            {
-                this.status = status;
-                OnStatusChanged(this);
-            }
 
             private void apiHandler(string apiCall)
             {
-                this.apiCalls.Add(apiCall);
+                string[] apiDetails = apiCall.Split('(');
+                if (!this.apiCalls.Contains(apiDetails[0])) this.apiCalls.Add(apiDetails[0]);
             }
 
             private void Analyzer()
@@ -148,8 +136,8 @@ namespace AHMDS.Engine
                 this.Scan();
                 this.DumpRegistries();
                 MalwareInfo result = this.Analyze();
-                
-                OnFinished(this, result);
+
+                updateFinish(result);
                 updateStatus(FINISHED);
                 ACTIVE_SANDBOX[box] = false;
                 ProcessQueue();
@@ -158,15 +146,16 @@ namespace AHMDS.Engine
             private MalwareInfo Analyze()
             {
                 // lakukan perhitungan dengan masing-masing rule
-                RuleEngine.CalculationResult calculateAPI  = RuleEngine.CalculateAPICalls(this.apiCalls.ToArray());
+                RuleEngine.CalculationResult calculateAPI = RuleEngine.CalculateAPICalls(this.apiCalls.ToArray());
                 RuleEngine.CalculationResult calculateREG  = RuleEngine.CalculateRegistries(this.registries);
                 RuleEngine.CalculationResult calculateFile = RuleEngine.CalculateFiles(this.scannedFiles);
 
                 // gabungkan hasil perhitungan beserta penjelasannya
-                int totalScore = calculateAPI.Score + calculateREG.Score + calculateFile.Score;
+                int totalScore = calculateREG.Score + calculateFile.Score;
+                //int totalScore = calculateAPI.Score + calculateREG.Score + calculateFile.Score;
                 List<string> explanation = new List<string>();
 
-                explanation.AddRange(calculateAPI.Explanation);
+                //explanation.AddRange(calculateAPI.Explanation);
                 explanation.AddRange(calculateREG.Explanation);
                 explanation.AddRange(calculateFile.Explanation);
 

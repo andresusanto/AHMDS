@@ -19,8 +19,9 @@ namespace AHMDS
             FormBatchAnalyzer.CheckForIllegalCrossThreadCalls = false;
         }
 
-        private void updateUI(DynamicAnalyzer.DynamicObject sender)
+        private void updateUI(Analyzer.AnalyzedObject asender)
         {
+            DynamicAnalyzer.DynamicObject sender = (DynamicAnalyzer.DynamicObject)asender;
             ListViewItem item = (ListViewItem) sender.storage;
 
             switch (sender.Status)
@@ -67,7 +68,9 @@ namespace AHMDS
 
             foreach (ListViewItem item in lstAnalyze.Items)
             {
-                DynamicAnalyzer.ResultHandler act = delegate(DynamicAnalyzer.DynamicObject dsender, MalwareInfo result){ };
+                DynamicAnalyzer.ResultHandler act = delegate(Analyzer.AnalyzedObject dsender, MalwareInfo result){
+                    Console.WriteLine("Skor: " + result.Score);
+                };
                 DynamicAnalyzer.DynamicObject obj = new DynamicAnalyzer.DynamicObject((string)item.Tag, act, updateUI);
                 obj.storage = item;
                 DynamicAnalyzer.AddQueue(obj);

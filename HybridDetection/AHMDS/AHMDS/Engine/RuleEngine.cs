@@ -5,6 +5,7 @@ using System.Text;
 using SbsSW.SwiPlCs;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Runtime.CompilerServices;
 
 namespace AHMDS.Engine
 {
@@ -131,6 +132,7 @@ namespace AHMDS.Engine
             }
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public static CalculationResult CalculateAPICalls(string[] apiCalls)
         {
             int score = 0;

@@ -31,7 +31,7 @@
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="SWIPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Program Files\swipl</Value>
+      <Value Profile="(Default)">C:\Program Files (x86)\swipl</Value>
     </Setting>
     <Setting Name="MalwareScoreThreshold" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">500</Value>

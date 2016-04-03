@@ -77,7 +77,9 @@
       <DependentUpon>ahmdsDataSet.xsd</DependentUpon>
     </Compile>
     <Compile Include="Engine\AHMDSWindow.cs" />
+    <Compile Include="Engine\Analyzer.cs" />
     <Compile Include="Engine\DynamicAnalyzer.cs" />
+    <Compile Include="Engine\HybridAnalyzer.cs" />
     <Compile Include="Engine\MalwareInfo.cs" />
     <Compile Include="Engine\RuleEngine.cs" />
     <Compile Include="Engine\Sandboxie.cs" />

@@ -102,9 +102,11 @@ namespace AHMDS
             MessageBox.Show("Scan completed! " + check + " file(s) scaned.");
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void tes()
         {
             RuleEngine.CalculationResult result = RuleEngine.CalculateAPICalls(new string[2] { "GetAsyncKeyState", "GetKeyState" });
+            result = RuleEngine.CalculateAPICalls(new string[2] { "GetAsyncKeyState", "GetKeyState" });
+
             foreach (String s in result.Explanation)
                 textBox1.AppendText(s + "\n");
 
@@ -169,6 +171,12 @@ namespace AHMDS
                 textBox1.AppendText(s + "\n");
 
             textBox2.Text = "" + (result.Score + resReg.Score + resFile.Score);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Thread coba = new Thread(tes);
+            coba.Start();
         }
     }
 }
