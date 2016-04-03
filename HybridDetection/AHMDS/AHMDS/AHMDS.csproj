@@ -91,11 +91,23 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\FormAnalysisResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\FormAnalysisResult.Designer.cs">
+      <DependentUpon>FormAnalysisResult.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\FormBatchAnalyzer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\FormBatchAnalyzer.designer.cs">
       <DependentUpon>FormBatchAnalyzer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\FormSingleAnalyzer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\FormSingleAnalyzer.Designer.cs">
+      <DependentUpon>FormSingleAnalyzer.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

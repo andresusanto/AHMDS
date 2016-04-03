@@ -39,6 +39,8 @@
             // 
             // txtAddr
             // 
+            this.txtAddr.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAddr.Location = new System.Drawing.Point(13, 13);
             this.txtAddr.Name = "txtAddr";
             this.txtAddr.Size = new System.Drawing.Size(795, 20);
@@ -46,6 +48,8 @@
             // 
             // btnScan
             // 
+            this.btnScan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnScan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnScan.Location = new System.Drawing.Point(814, 12);
             this.btnScan.Name = "btnScan";
             this.btnScan.Size = new System.Drawing.Size(75, 23);
@@ -56,6 +60,9 @@
             // 
             // lstAnalyze
             // 
+            this.lstAnalyze.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstAnalyze.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
@@ -93,11 +100,9 @@
             this.Controls.Add(this.lstAnalyze);
             this.Controls.Add(this.btnScan);
             this.Controls.Add(this.txtAddr);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
             this.Name = "FormBatchAnalyzer";
-            this.Text = "AHMDS Dynamic Batch Analyzer";
+            this.Text = "AHMDS Scan";
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -21,27 +21,42 @@ namespace AHMDS
 
         private void updateUI(Analyzer.AnalyzedObject asender)
         {
-            DynamicAnalyzer.DynamicObject sender = (DynamicAnalyzer.DynamicObject)asender;
+            HybridAnalyzer.HybridObject sender = (HybridAnalyzer.HybridObject)asender;
             ListViewItem item = (ListViewItem) sender.storage;
 
             switch (sender.Status)
             {
-                case DynamicAnalyzer.DynamicObject.WAITING:
+                case HybridAnalyzer.HybridObject.VERIFYING:
+                    item.SubItems[2].ForeColor = Color.DarkBlue;
+                    item.SubItems[2].Text = "Verifying";
+                    break;
+
+                case HybridAnalyzer.HybridObject.STATIC_ANALYZING:
+                    item.SubItems[2].ForeColor = Color.DarkBlue;
+                    item.SubItems[2].Text = "[SA] Analyzing";
+                    break;
+
+                case HybridAnalyzer.HybridObject.DYNAMIC_INITIALIZED:
+                    item.SubItems[2].ForeColor = Color.DarkBlue;
+                    item.SubItems[2].Text = "[DA] Queued";
+                    break;
+
+                case HybridAnalyzer.HybridObject.DYNAMIC_WAITING:
                     item.SubItems[1].ForeColor = Color.Black;
                     item.SubItems[2].ForeColor = Color.DarkRed;
                     item.SubItems[1].Text = sender.Box;
-                    item.SubItems[2].Text = "Waiting for malware";
+                    item.SubItems[2].Text = "[DA] Waiting";
                     break;
 
-                case DynamicAnalyzer.DynamicObject.ANALYZING:
+                case HybridAnalyzer.HybridObject.DYNAMIC_ANALYZING:
                     item.SubItems[2].ForeColor = Color.DarkBlue;
-                    item.SubItems[2].Text = "Analyzing malware";
+                    item.SubItems[2].Text = "[DA] Analyzing";
                     break;
 
-                case DynamicAnalyzer.DynamicObject.FINISHED:
-                    item.SubItems[2].ForeColor = Color.DarkGreen;
-                    item.SubItems[2].Text = "Finished";
-                    break;
+                //case HybridAnalyzer.HybridObject.FINISHED:
+                //    item.SubItems[2].ForeColor = Color.DarkGreen;
+                //    item.SubItems[2].Text = "Finished";
+                //    break;
             }
         }
 
@@ -68,14 +83,40 @@ namespace AHMDS
 
             foreach (ListViewItem item in lstAnalyze.Items)
             {
-                DynamicAnalyzer.ResultHandler act = delegate(Analyzer.AnalyzedObject dsender, MalwareInfo result){
+                HybridAnalyzer.ResultHandler act = delegate(Analyzer.AnalyzedObject dsender, MalwareInfo result)
+                {
                     Console.WriteLine("Skor: " + result.Score);
                 };
-                DynamicAnalyzer.DynamicObject obj = new DynamicAnalyzer.DynamicObject((string)item.Tag, act, updateUI);
+                HybridAnalyzer.HybridObject obj = new HybridAnalyzer.HybridObject((string)item.Tag, updateResult, updateUI);
                 obj.storage = item;
-                DynamicAnalyzer.AddQueue(obj);
+                HybridAnalyzer.AddQueue(obj);
             }
 
+        }
+
+        private void updateResult(Analyzer.AnalyzedObject dsender, MalwareInfo result)
+        {
+            HybridAnalyzer.HybridObject sender = (HybridAnalyzer.HybridObject)dsender;
+            ListViewItem item = (ListViewItem)sender.storage;
+
+            switch (result.ResultCode)
+            {
+                case MalwareInfo.POSITIVE:
+                    item.SubItems[2].ForeColor = Color.Red;
+                    item.SubItems[2].Text = "[F] Malware";
+                    break;
+                
+                case MalwareInfo.NEGATIVE:
+                    item.SubItems[2].ForeColor = Color.DarkGreen;
+                    item.SubItems[2].Text = "[F] Clean";
+                    break;
+
+                case MalwareInfo.TRUSTED:
+                    item.SubItems[2].ForeColor = Color.DarkGreen;
+                    item.SubItems[2].Text = "[F] Trusted";
+                    break;
+
+            }
         }
 
         private void addFile(string[] files)

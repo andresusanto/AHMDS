@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace AHMDS.Engine
 {
@@ -13,12 +14,24 @@ namespace AHMDS.Engine
         public class AnalyzedObject
         {
             protected int status;
+            protected string box;
             protected string image_address = "";
+            protected Thread analysisThread;
 
             protected event ResultHandler OnFinished;
             protected event StatusHandler OnStatusChanged;
 
             public Object storage; // storage yang dapat digunakan untuk menyimpan referensi (untuk update GUI).
+
+            public int Status
+            {
+                get { return status; }
+            }
+
+            public string Box
+            {
+                get { return box; }
+            }
 
             protected void updateStatus(int status)
             {
@@ -37,6 +50,7 @@ namespace AHMDS.Engine
                 this.OnFinished += resultHandler;
                 this.OnStatusChanged += statusHandler;
             }
+
         }
 
         public class RegistryList : Dictionary<string, List<string>>{ } // Alias, agar namanya lebih rapi saja

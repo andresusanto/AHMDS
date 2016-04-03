@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace AHMDS.Engine
 {
@@ -15,14 +16,14 @@ namespace AHMDS.Engine
         {
             if (!isBusy && QueueStatic.Count > 0)
             {
-                QueueStatic.Dequeue().Analyze();
+                QueueStatic.Dequeue().Start();
             }
         }
 
         public static void AddQueue(HybridObject obj)
         {
-            //QueueStatic.Enqueue(obj);
-            //ProcessQueue();
+            QueueStatic.Enqueue(obj);
+            ProcessQueue();
         }
 
         // kelas dari objek yang sedang dianalisis
@@ -36,14 +37,23 @@ namespace AHMDS.Engine
             public const int DYNAMIC_ANALYZING = 5;
             public const int FINISHED = 6;
 
+            private DynamicAnalyzer.DynamicObject dynamicObject;
+
             public HybridObject (string image_address, ResultHandler resultHandler, StatusHandler statusHandler) : base(image_address, resultHandler, statusHandler)
             {
                 this.status = NOT_STARTED;
             }
 
-            public void Analyze()
+            public void Start()
             {
                 isBusy = true;
+
+                analysisThread = new Thread(Analyzer);
+                analysisThread.Start();
+            }
+
+            private void Analyzer()
+            {
                 MalwareInfo result;
 
                 // pertama lakukan proses verifikasi
@@ -71,7 +81,23 @@ namespace AHMDS.Engine
                 isBusy = false; // izinkan analisis statik lainnya dimulai
                 ProcessQueue();
 
-                DynamicAnalyzer.DynamicObject dynamicObject = new DynamicAnalyzer.DynamicObject(image_address, dynamicFinished, dynamicProgressWatcher);
+                dynamicObject = new DynamicAnalyzer.DynamicObject(image_address, dynamicFinished, dynamicProgressWatcher);
+                DynamicAnalyzer.AddQueue(dynamicObject);
+            }
+
+            public void Terminate()
+            {
+                if (status == NOT_STARTED) return; // analisis belum dimulai
+
+                if (dynamicObject != null)
+                    dynamicObject.Terminate();
+                else
+                {
+                    analysisThread.Abort();
+                    isBusy = false;
+                }
+                
+                //ProcessQueue();
             }
 
             private void dynamicProgressWatcher(Analyzer.AnalyzedObject asender)
@@ -80,6 +106,7 @@ namespace AHMDS.Engine
                 switch (sender.Status)
                 {
                     case DynamicAnalyzer.DynamicObject.WAITING:
+                        this.box = sender.Box;
                         updateStatus(DYNAMIC_WAITING);
                         break;
 
@@ -98,6 +125,7 @@ namespace AHMDS.Engine
             {
                 updateFinish(result);
                 updateStatus(FINISHED);
+                isBusy = false;
                 ProcessQueue();
             }
         }

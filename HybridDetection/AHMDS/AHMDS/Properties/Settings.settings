@@ -34,10 +34,10 @@
       <Value Profile="(Default)">C:\Program Files (x86)\swipl</Value>
     </Setting>
     <Setting Name="MalwareScoreThreshold" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">500</Value>
+      <Value Profile="(Default)">1000</Value>
     </Setting>
     <Setting Name="APICallScoreThreshold" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">200</Value>
+      <Value Profile="(Default)">500</Value>
     </Setting>
   </Settings>
 </SettingsFile>

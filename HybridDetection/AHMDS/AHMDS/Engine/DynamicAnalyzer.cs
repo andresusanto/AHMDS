@@ -36,8 +36,7 @@ namespace AHMDS.Engine
             {
                 if ((!ACTIVE_SANDBOX.ContainsKey(sandbox) || !ACTIVE_SANDBOX[sandbox]) && QueueAnalysis.Count > 0)
                 {
-                    DynamicObject obj = QueueAnalysis.Dequeue();
-                    obj.Start(sandbox);
+                    QueueAnalysis.Dequeue().Start(sandbox);
                     break;
                 }
             }
@@ -58,24 +57,12 @@ namespace AHMDS.Engine
             public const int ANALYZING = 2;
             public const int FINISHED = 3;
             
-            private string box;
-            private Thread analysisThread;
-
             // hasil analisis
             private List<string> scannedDirectories;
             private List<string> scannedFiles;
             private List<string> apiCalls;
             private RegistryList registries;
 
-            public string Box
-            {
-                get { return box; }
-            }
-
-            public int Status
-            {
-                get { return status; }
-            }
 
             public DynamicObject(string image_address, ResultHandler resultHandler, StatusHandler statusHandler) : base(image_address, resultHandler, statusHandler)
             {
@@ -103,12 +90,14 @@ namespace AHMDS.Engine
 
             public void Terminate()
             {
+                if (status == NOT_STARTED) return; // analisis belum dimulai
+
                 analysisThread.Abort();
                 sbx.KillAll(box);
                 aWindow[box].unsubscribeHandler(apiHandler);
                 updateStatus(FINISHED);
                 ACTIVE_SANDBOX[box] = false;
-                ProcessQueue();
+                //ProcessQueue();
             }
 
 
