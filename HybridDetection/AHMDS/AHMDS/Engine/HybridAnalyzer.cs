@@ -26,6 +26,11 @@ namespace AHMDS.Engine
             ProcessQueue();
         }
 
+        public static void ClearQueue()
+        {
+            QueueStatic.Clear();
+        }
+
         // kelas dari objek yang sedang dianalisis
         public class HybridObject : AnalyzedObject
         {
@@ -89,13 +94,11 @@ namespace AHMDS.Engine
             {
                 if (status == NOT_STARTED) return; // analisis belum dimulai
 
-                if (dynamicObject != null)
-                    dynamicObject.Terminate();
-                else
-                {
-                    analysisThread.Abort();
-                    isBusy = false;
-                }
+                if (dynamicObject != null) dynamicObject.Terminate();
+                
+                analysisThread.Abort();
+                isBusy = false;
+                
                 
                 //ProcessQueue();
             }

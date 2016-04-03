@@ -12,7 +12,7 @@ namespace AHMDS.Engine
 {
     public class DynamicAnalyzer : Analyzer
     {
-        private const int ANALYZE_DURATION = 10;
+        private const int ANALYZE_DURATION = 30;
         private static string SBIE_BOX_LOC = Properties.Settings.Default.SandboxieBoxLocation; //@"C:\Sandbox\AHMDS\"; // must end with \ !!
         private static string SBIE_DLL_LOC = Properties.Settings.Default.SandboxieDllLocation; //@"C:\Program Files\Sandboxie\32\SbieDll.dll";
         private static string SBIE_START_LOC = Properties.Settings.Default.SandboxieExeLocation; //@"C:\Program Files\Sandboxie\Start.exe";
@@ -40,6 +40,11 @@ namespace AHMDS.Engine
                     break;
                 }
             }
+        }
+
+        public static void ClearQueue()
+        {
+            QueueAnalysis.Clear();
         }
 
         public static void AddQueue(DynamicObject obj)

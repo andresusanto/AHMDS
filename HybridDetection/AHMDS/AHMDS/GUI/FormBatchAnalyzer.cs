@@ -13,13 +13,42 @@ namespace AHMDS
 {
     public partial class FormBatchAnalyzer : Form
     {
+        private List<HybridAnalyzer.HybridObject> currentAnalyzed;
+
         public FormBatchAnalyzer()
         {
             InitializeComponent();
             FormBatchAnalyzer.CheckForIllegalCrossThreadCalls = false;
+            currentAnalyzed = new List<HybridAnalyzer.HybridObject>();
         }
 
-        private void updateUI(Analyzer.AnalyzedObject asender)
+        private void updateResult(Analyzer.AnalyzedObject dsender, MalwareInfo result)
+        {
+            HybridAnalyzer.HybridObject sender = (HybridAnalyzer.HybridObject)dsender;
+            ListViewItem item = (ListViewItem)sender.storage;
+
+            currentAnalyzed.Remove(sender);
+            switch (result.ResultCode)
+            {
+                case MalwareInfo.POSITIVE:
+                    item.SubItems[2].ForeColor = Color.Red;
+                    item.SubItems[2].Text = "[F] Malware";
+                    break;
+
+                case MalwareInfo.NEGATIVE:
+                    item.SubItems[2].ForeColor = Color.DarkGreen;
+                    item.SubItems[2].Text = "[F] Clean";
+                    break;
+
+                case MalwareInfo.TRUSTED:
+                    item.SubItems[2].ForeColor = Color.DarkGreen;
+                    item.SubItems[2].Text = "[F] Trusted";
+                    break;
+
+            }
+        }
+
+        private void updateStatus(Analyzer.AnalyzedObject asender)
         {
             HybridAnalyzer.HybridObject sender = (HybridAnalyzer.HybridObject)asender;
             ListViewItem item = (ListViewItem) sender.storage;
@@ -53,17 +82,26 @@ namespace AHMDS
                     item.SubItems[2].Text = "[DA] Analyzing";
                     break;
 
-                //case HybridAnalyzer.HybridObject.FINISHED:
-                //    item.SubItems[2].ForeColor = Color.DarkGreen;
-                //    item.SubItems[2].Text = "Finished";
-                //    break;
             }
         }
 
         private void btnScan_Click(object sender, EventArgs e)
         {
-            btnScan.Enabled = false;
+            if (btnScan.Text == "SCAN")
+            {
+                btnScan.Text = "STOP";
+                beginScan();
+            }
+            else
+            {
+                stopScan();
+                btnScan.Text = "SCAN";
+            }
+            
+        }
 
+        private void beginScan()
+        {
             string alamat = txtAddr.Text;
             Queue<string> tmpScan = new Queue<string>(Directory.GetDirectories(alamat));
 
@@ -83,40 +121,24 @@ namespace AHMDS
 
             foreach (ListViewItem item in lstAnalyze.Items)
             {
-                HybridAnalyzer.ResultHandler act = delegate(Analyzer.AnalyzedObject dsender, MalwareInfo result)
-                {
-                    Console.WriteLine("Skor: " + result.Score);
-                };
-                HybridAnalyzer.HybridObject obj = new HybridAnalyzer.HybridObject((string)item.Tag, updateResult, updateUI);
+                HybridAnalyzer.HybridObject obj = new HybridAnalyzer.HybridObject((string)item.Tag, updateResult, updateStatus);
                 obj.storage = item;
+
+                currentAnalyzed.Add(obj);
                 HybridAnalyzer.AddQueue(obj);
             }
-
         }
 
-        private void updateResult(Analyzer.AnalyzedObject dsender, MalwareInfo result)
+        private void stopScan()
         {
-            HybridAnalyzer.HybridObject sender = (HybridAnalyzer.HybridObject)dsender;
-            ListViewItem item = (ListViewItem)sender.storage;
-
-            switch (result.ResultCode)
+            foreach (HybridAnalyzer.HybridObject obj in currentAnalyzed)
             {
-                case MalwareInfo.POSITIVE:
-                    item.SubItems[2].ForeColor = Color.Red;
-                    item.SubItems[2].Text = "[F] Malware";
-                    break;
-                
-                case MalwareInfo.NEGATIVE:
-                    item.SubItems[2].ForeColor = Color.DarkGreen;
-                    item.SubItems[2].Text = "[F] Clean";
-                    break;
-
-                case MalwareInfo.TRUSTED:
-                    item.SubItems[2].ForeColor = Color.DarkGreen;
-                    item.SubItems[2].Text = "[F] Trusted";
-                    break;
-
+                obj.Terminate();
             }
+
+            currentAnalyzed.Clear();
+            DynamicAnalyzer.ClearQueue();
+            HybridAnalyzer.ClearQueue();
         }
 
         private void addFile(string[] files)
@@ -135,6 +157,17 @@ namespace AHMDS
 
                 }
             }
+        }
+
+        private void FormBatchAnalyzer_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (btnScan.Text == "STOP"){
+                if (MessageBox.Show("A scan is being done. Are you sure want to cancel it?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
+                    e.Cancel = true;
+                else
+                    stopScan();
+            }
+
         }
 
     }

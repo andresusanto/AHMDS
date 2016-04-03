@@ -103,6 +103,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormBatchAnalyzer";
             this.Text = "AHMDS Scan";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormBatchAnalyzer_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
