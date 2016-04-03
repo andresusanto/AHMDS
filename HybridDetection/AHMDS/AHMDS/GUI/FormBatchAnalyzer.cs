@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using AHMDS.Engine;
+using AHMDS.GUI;
 
 namespace AHMDS
 {
@@ -20,13 +21,14 @@ namespace AHMDS
             InitializeComponent();
             FormBatchAnalyzer.CheckForIllegalCrossThreadCalls = false;
             currentAnalyzed = new List<HybridAnalyzer.HybridObject>();
+
         }
 
         private void updateResult(Analyzer.AnalyzedObject dsender, MalwareInfo result)
         {
             HybridAnalyzer.HybridObject sender = (HybridAnalyzer.HybridObject)dsender;
             ListViewItem item = (ListViewItem)sender.storage;
-
+            item.Tag = result;
             currentAnalyzed.Remove(sender);
             switch (result.ResultCode)
             {
@@ -89,6 +91,7 @@ namespace AHMDS
         {
             if (btnScan.Text == "SCAN")
             {
+                lstAnalyze.Items.Clear();
                 btnScan.Text = "STOP";
                 beginScan();
             }
@@ -168,6 +171,18 @@ namespace AHMDS
                     stopScan();
             }
 
+        }
+
+        private void lstAnalyze_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (lstAnalyze.SelectedItems[0].Tag.GetType() == typeof(string))
+                MessageBox.Show("AHMDS can't show analysis result for unanalyzed file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            else
+            {
+                MalwareInfo malwareinfo = (MalwareInfo)lstAnalyze.SelectedItems[0].Tag;
+                FormAnalysisResult analysisResult = new FormAnalysisResult(lstAnalyze.SelectedItems[0].Text, malwareinfo);
+                analysisResult.Show();
+            }
         }
 
     }

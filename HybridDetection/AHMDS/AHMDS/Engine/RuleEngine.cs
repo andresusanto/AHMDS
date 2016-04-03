@@ -167,6 +167,7 @@ namespace AHMDS.Engine
                 using (var q = new PlQuery("explanation(X)"))
                 {
                     explanation.AddRange(q.SolutionVariables.First()["X"].ToListString());
+                    explanation = explanation.Distinct().ToList();
                 }
 
                 PlEngine.PlCleanup();

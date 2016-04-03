@@ -12,7 +12,6 @@ namespace AHMDS.Engine
 {
     public class DynamicAnalyzer : Analyzer
     {
-        private const int ANALYZE_DURATION = 30;
         private static string SBIE_BOX_LOC = Properties.Settings.Default.SandboxieBoxLocation; //@"C:\Sandbox\AHMDS\"; // must end with \ !!
         private static string SBIE_DLL_LOC = Properties.Settings.Default.SandboxieDllLocation; //@"C:\Program Files\Sandboxie\32\SbieDll.dll";
         private static string SBIE_START_LOC = Properties.Settings.Default.SandboxieExeLocation; //@"C:\Program Files\Sandboxie\Start.exe";
@@ -109,14 +108,14 @@ namespace AHMDS.Engine
             private void apiHandler(string apiCall)
             {
                 string[] apiDetails = apiCall.Split('(');
-                if (!this.apiCalls.Contains(apiDetails[0])) this.apiCalls.Add(apiDetails[0]);
+                this.apiCalls.Add(apiDetails[0]);
             }
 
             private void Analyzer()
             {
 
                 updateStatus(WAITING);
-                Thread.Sleep(1000 * ANALYZE_DURATION);
+                Thread.Sleep(1000 * Properties.Settings.Default.DynamicAnalysisDuration);
                 
                 // tidak melakukan apapun sampai selesai waiting. berikan kesempatan malware beraksi.
 
@@ -142,11 +141,10 @@ namespace AHMDS.Engine
                 RuleEngine.CalculationResult calculateFile = RuleEngine.CalculateFiles(this.scannedFiles);
 
                 // gabungkan hasil perhitungan beserta penjelasannya
-                int totalScore = calculateREG.Score + calculateFile.Score;
-                //int totalScore = calculateAPI.Score + calculateREG.Score + calculateFile.Score;
+                int totalScore = calculateAPI.Score + calculateREG.Score + calculateFile.Score;
                 List<string> explanation = new List<string>();
 
-                //explanation.AddRange(calculateAPI.Explanation);
+                explanation.AddRange(calculateAPI.Explanation);
                 explanation.AddRange(calculateREG.Explanation);
                 explanation.AddRange(calculateFile.Explanation);
 

@@ -43,6 +43,8 @@ namespace AHMDS.Engine
             public const int FINISHED = 6;
 
             private DynamicAnalyzer.DynamicObject dynamicObject;
+            private List<string> staticExplanations;
+            private int staticScore;
 
             public HybridObject (string image_address, ResultHandler resultHandler, StatusHandler statusHandler) : base(image_address, resultHandler, statusHandler)
             {
@@ -79,6 +81,8 @@ namespace AHMDS.Engine
                     updateAndFinish(result);
                     return; // proses analisis selesai
                 }
+                staticExplanations = result.Explanation;
+                staticScore = result.Score;
 
                 // jika program tersebut lolos dari tahap static analysis, lakukan dynamic
                 updateStatus(DYNAMIC_INITIALIZED);
@@ -121,6 +125,8 @@ namespace AHMDS.Engine
 
             private void dynamicFinished(Analyzer.AnalyzedObject dsender, MalwareInfo result)
             {
+                result.Score += staticScore;
+                result.Explanation.AddRange(staticExplanations);
                 updateAndFinish(result);
             }
 

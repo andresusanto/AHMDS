@@ -76,6 +76,7 @@
             this.lstAnalyze.TabIndex = 3;
             this.lstAnalyze.UseCompatibleStateImageBehavior = false;
             this.lstAnalyze.View = System.Windows.Forms.View.Details;
+            this.lstAnalyze.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstAnalyze_MouseDoubleClick);
             // 
             // columnHeader1
             // 

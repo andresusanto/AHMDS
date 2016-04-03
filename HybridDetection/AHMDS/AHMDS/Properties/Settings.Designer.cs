@@ -134,5 +134,17 @@ namespace AHMDS.Properties {
                 this["APICallScoreThreshold"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int DynamicAnalysisDuration {
+            get {
+                return ((int)(this["DynamicAnalysisDuration"]));
+            }
+            set {
+                this["DynamicAnalysisDuration"] = value;
+            }
+        }
     }
 }

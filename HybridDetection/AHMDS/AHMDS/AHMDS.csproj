@@ -114,8 +114,14 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\FormAnalysisResult.resx">
+      <DependentUpon>FormAnalysisResult.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\FormBatchAnalyzer.resx">
       <DependentUpon>FormBatchAnalyzer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\FormSingleAnalyzer.resx">
+      <DependentUpon>FormSingleAnalyzer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -125,6 +131,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
     <None Include="app.manifest" />
@@ -167,6 +174,7 @@
     <Content Include="Libs\SE.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\icon-109133.png" />
     <Content Include="Rules\FilesystemRules.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -39,5 +39,8 @@
     <Setting Name="APICallScoreThreshold" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">500</Value>
     </Setting>
+    <Setting Name="DynamicAnalysisDuration" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
