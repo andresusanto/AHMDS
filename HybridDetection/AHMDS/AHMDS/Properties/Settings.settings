@@ -33,5 +33,11 @@
     <Setting Name="SWIPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Program Files\swipl</Value>
     </Setting>
+    <Setting Name="MalwareScoreThreshold" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
+    <Setting Name="APICallScoreThreshold" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

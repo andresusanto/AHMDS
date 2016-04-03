@@ -38,6 +38,9 @@ namespace AHMDS.Engine
 
         public MalwareInfo Check(string FileName)
         {
+            MalwareInfo dbResult = CheckToDb(FileName);
+            if (dbResult.ResultCode == MalwareInfo.POSITIVE) return dbResult; // jika terdeteksi pada database langsung kembalikan
+
             // bagian untuk "memecah" file PE berdasarkan tiap sections yang dimiliki untuk dianalisis
             Process p = new Process();
             p.StartInfo.UseShellExecute = false;
@@ -67,7 +70,19 @@ namespace AHMDS.Engine
                 }
                 CleanUp(extractedFileNames); // hapus file-file yang dihasilkan library
             }
-            return CheckToDb(FileName);
+
+            // lakukan pemeriksaan terhadap sekuens API Call program
+            List<string> apiCalls = extractAPICalls(FileName);
+            RuleEngine.CalculationResult apiResult = RuleEngine.CalculateAPICalls(apiCalls.ToArray());
+
+            if (apiResult.Score > Properties.Settings.Default.APICallScoreThreshold)
+            {
+                return new MalwareInfo(MalwareInfo.POSITIVE, "Malicious API Calls detected", apiResult.Score, apiResult.Explanation);
+            }
+            else
+            {
+                return new MalwareInfo(MalwareInfo.NEGATIVE, "No known malicious code detected. Program's API Calls threat is under specified threshold.", apiResult.Score, apiResult.Explanation);
+            }
         }
 
         public List<string> extractAPICalls(string FileName)
@@ -119,7 +134,7 @@ namespace AHMDS.Engine
             }
             catch  // jika file tidak ditemukan
             {
-                return new MalwareInfo(MalwareInfo.NEGATIVE, "Path not found");
+                return new MalwareInfo(MalwareInfo.NEGATIVE, "Path not found", 0, null);
             }
 
             StringBuilder sb = new StringBuilder();
@@ -133,11 +148,11 @@ namespace AHMDS.Engine
 
             if (resultTable.Count > 0)
             {
-                return new MalwareInfo(MalwareInfo.POSITIVE, "Detected as " + resultTable.Rows[0][1].ToString());
+                return new MalwareInfo(MalwareInfo.POSITIVE, "Detected as " + resultTable.Rows[0][1].ToString(), 999, null);
             }
             else
             {
-                return new MalwareInfo(MalwareInfo.NEGATIVE, "Nothing found in database");
+                return new MalwareInfo(MalwareInfo.NEGATIVE, "Nothing found in database", 0, null);
             }
         }
     }

@@ -157,33 +157,28 @@ namespace AHMDS.Engine
 
             private MalwareInfo Analyze()
             {
-                // TODO: perform analysis
-                string folderAddress = Path.GetDirectoryName(this.image_address) + @"\Report of " + Path.GetFileName(this.image_address);
-                if (! Directory.Exists(folderAddress)) Directory.CreateDirectory(folderAddress);
+                // lakukan perhitungan dengan masing-masing rule
+                RuleEngine.CalculationResult calculateAPI  = RuleEngine.CalculateAPICalls(this.apiCalls.ToArray());
+                RuleEngine.CalculationResult calculateREG  = RuleEngine.CalculateRegistries(this.registries);
+                RuleEngine.CalculationResult calculateFile = RuleEngine.CalculateFiles(this.scannedFiles);
 
-                File.WriteAllLines(folderAddress + @"\apicalls.txt", this.apiCalls);
-                File.WriteAllLines(folderAddress + @"\directories.txt", this.scannedDirectories);
-                File.WriteAllLines(folderAddress + @"\files.txt", this.scannedFiles);
+                // gabungkan hasil perhitungan beserta penjelasannya
+                int totalScore = calculateAPI.Score + calculateREG.Score + calculateFile.Score;
+                List<string> explanation = new List<string>();
 
-                using (StreamWriter file = new StreamWriter(folderAddress + @"\registries.txt"))
+                explanation.AddRange(calculateAPI.Explanation);
+                explanation.AddRange(calculateREG.Explanation);
+                explanation.AddRange(calculateFile.Explanation);
+
+                // kembalikan hasil
+                if (totalScore > Properties.Settings.Default.MalwareScoreThreshold)
                 {
-                    foreach (KeyValuePair<string, List<string>> entry in this.registries)
-                    {
-                        file.Write('[');
-                        file.Write(entry.Key);
-                        file.WriteLine(']');
-                        
-                        foreach (string konten in entry.Value)
-                        {
-                            file.WriteLine(konten);
-                        }
-
-                        file.WriteLine();
-                    }
+                    return new MalwareInfo(MalwareInfo.POSITIVE, "Program contains Malicious Behaviors", totalScore, explanation);
                 }
-
-                
-                return new MalwareInfo(MalwareInfo.NEGATIVE, "Program doesn't contain malicious behaviour.");
+                else
+                {
+                    return new MalwareInfo(MalwareInfo.NEGATIVE, "Program threat level is below Malware Threshold", totalScore, explanation);
+                }
             }
 
             // scan subdirs and files

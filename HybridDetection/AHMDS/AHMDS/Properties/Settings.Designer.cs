@@ -110,5 +110,29 @@ namespace AHMDS.Properties {
                 this["SWIPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public int MalwareScoreThreshold {
+            get {
+                return ((int)(this["MalwareScoreThreshold"]));
+            }
+            set {
+                this["MalwareScoreThreshold"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        public int APICallScoreThreshold {
+            get {
+                return ((int)(this["APICallScoreThreshold"]));
+            }
+            set {
+                this["APICallScoreThreshold"] = value;
+            }
+        }
     }
 }

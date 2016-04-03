@@ -25,7 +25,7 @@ namespace AHMDS
             System.Windows.Forms.Form.CheckForIllegalCrossThreadCalls = false;
 
             Thread scanthread = new Thread(scan);
-            //scanthread.Start();
+            scanthread.Start();
         }
 
         List<string> expandFolder(string alamat)

@@ -30,7 +30,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -55,7 +55,8 @@
     <ApplicationIcon>ahmds.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SwiPlCs">
+    <Reference Include="SwiPlCs, Version=1.1.60605.0, Culture=neutral, PublicKeyToken=03ea137181587c56, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\SwiPlCs.dll</HintPath>
     </Reference>
     <Reference Include="System" />
