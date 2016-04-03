@@ -65,7 +65,7 @@ namespace AHMDS.Engine
             private List<string> scannedDirectories;
             private List<string> scannedFiles;
             private List<string> apiCalls;
-            private Dictionary<string, List<string>> registries;
+            private RegistryList registries;
 
             public string Box
             {
@@ -77,12 +77,9 @@ namespace AHMDS.Engine
                 get { return status; }
             }
 
-            public DynamicObject(string image_address, ResultHandler resultHandler, StatusHandler statusHandler)
+            public DynamicObject(string image_address, ResultHandler resultHandler, StatusHandler statusHandler) : base(image_address, resultHandler, statusHandler)
             {
-                this.image_address = image_address;
                 this.status = NOT_STARTED;
-                this.OnFinished += resultHandler;
-                this.OnStatusChanged += statusHandler;
             }
 
             public void Start(string box) // box diletakan disini karena proses Queue yang akan mengassign box
@@ -201,7 +198,7 @@ namespace AHMDS.Engine
 
             private void DumpRegistries()
             {
-                this.registries = new Dictionary<string, List<string>>();
+                this.registries = new RegistryList();
 
                 // copy file RegHive
                 bool fileLocked = true;

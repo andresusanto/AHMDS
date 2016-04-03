@@ -85,7 +85,7 @@ namespace AHMDS.Engine
             }
         }
 
-        public List<string> extractAPICalls(string FileName)
+        private List<string> extractAPICalls(string FileName)
         {
             List<string> result = new List<string>();
             Process p = new Process();

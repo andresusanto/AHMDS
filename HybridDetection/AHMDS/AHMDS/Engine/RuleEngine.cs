@@ -5,16 +5,16 @@ using System.Text;
 using SbsSW.SwiPlCs;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Runtime.CompilerServices;
 
 namespace AHMDS.Engine
 {
     class RuleEngine
     {
+        private static readonly object prologLock = new object();
         private static string SWI_HOME_DIR = Properties.Settings.Default.SWIPath; 
         
-        private static Dictionary<string, List<string>> startupRegistries; // menyimpan daftar registry yang biasa digunakan oleh malware untuk startup
-        private static Dictionary<string, List<string>> suspiciousRegistries; // meyimpan daftar registry yang biasa digunakan oleh malware untuk melakukan kegiatan malicious. elemen List<string> [ count ] adalah penjelasan
+        private static Analyzer.RegistryList startupRegistries; // menyimpan daftar registry yang biasa digunakan oleh malware untuk startup
+        private static Analyzer.RegistryList suspiciousRegistries; // meyimpan daftar registry yang biasa digunakan oleh malware untuk melakukan kegiatan malicious. elemen List<string> [ count ] adalah penjelasan
         private static List<FilesystemRule> suspiciousFiles;
 
         private static void initAPI()
@@ -28,7 +28,7 @@ namespace AHMDS.Engine
             if (startupRegistries == null)
             {
                 // baca registry registry startup malware
-                startupRegistries = new Dictionary<string, List<string>>();
+                startupRegistries = new Analyzer.RegistryList();
                 StreamReader reader = new StreamReader("Rules\\RegistriesStart.txt");
                 do
                 {
@@ -52,7 +52,7 @@ namespace AHMDS.Engine
 
 
                 // baca registry-registry yang mencurigakan
-                suspiciousRegistries = new Dictionary<string, List<string>>();
+                suspiciousRegistries = new Analyzer.RegistryList();
                 reader = new StreamReader("Rules\\RegistriesSuspicious.txt");
                 do{
                     string[] content = reader.ReadLine().Split(',');
@@ -132,43 +132,46 @@ namespace AHMDS.Engine
             }
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public static CalculationResult CalculateAPICalls(string[] apiCalls)
         {
             int score = 0;
             List<string> explanation = new List<string>();
 
-            initAPI();
-            StringBuilder sb = new StringBuilder();
-            Console.WriteLine(PlQuery.PlCall("consult('Rules/APICallRules.pl')"));
-
-            PlTerm listApi = PlTerm.PlVar();
-            PlTerm tailApi = PlTerm.PlTail(listApi);
-
-            // membuat list dari apiCalls
-            foreach (string api in apiCalls)
+            lock (prologLock) // hanya boleh satu thread yang berkomunikasi dengan swi prolog dalam satu waktu
             {
-                sb.Append('"'); sb.Append(api); sb.Append('"');
-                tailApi.Append(PlTerm.PlString(sb.ToString()));
-                sb.Clear();
+                initAPI();
+                StringBuilder sb = new StringBuilder();
+                Console.WriteLine(PlQuery.PlCall("consult('Rules/APICallRules.pl')"));
+
+                PlTerm listApi = PlTerm.PlVar();
+                PlTerm tailApi = PlTerm.PlTail(listApi);
+
+                // membuat list dari apiCalls
+                foreach (string api in apiCalls)
+                {
+                    sb.Append('"'); sb.Append(api); sb.Append('"');
+                    tailApi.Append(PlTerm.PlString(sb.ToString()));
+                    sb.Clear();
+                }
+                tailApi.Close();
+
+                sb.Append("score("); sb.Append(listApi.ToString()); sb.Append(", X)");
+
+                // lakukan query ke knowledge dengan list yang dibentuk
+                using (var q = new PlQuery(sb.ToString()))
+                {
+                    score = Int32.Parse(q.SolutionVariables.First()["X"].ToString());
+                }
+
+                // query explanation yang dihasilkan
+                using (var q = new PlQuery("explanation(X)"))
+                {
+                    explanation.AddRange(q.SolutionVariables.First()["X"].ToListString());
+                }
+
+                PlEngine.PlCleanup();
             }
-            tailApi.Close();
-
-            sb.Append("score("); sb.Append(listApi.ToString()); sb.Append(", X)");
-
-            // lakukan query ke knowledge dengan list yang dibentuk
-            using (var q = new PlQuery(sb.ToString()))
-            {
-                score = Int32.Parse(q.SolutionVariables.First()["X"].ToString());
-            }
-
-            // query explanation yang dihasilkan
-            using (var q = new PlQuery("explanation(X)"))
-            {
-                explanation.AddRange(q.SolutionVariables.First()["X"].ToListString());
-            }
-
-            PlEngine.PlCleanup();
+            
             return new CalculationResult(score, explanation);
         }
 

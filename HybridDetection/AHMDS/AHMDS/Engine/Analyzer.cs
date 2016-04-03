@@ -30,6 +30,15 @@ namespace AHMDS.Engine
             {
                 OnFinished(this, result);
             }
+
+            public AnalyzedObject(string image_address, ResultHandler resultHandler, StatusHandler statusHandler)
+            {
+                this.image_address = image_address;
+                this.OnFinished += resultHandler;
+                this.OnStatusChanged += statusHandler;
+            }
         }
+
+        public class RegistryList : Dictionary<string, List<string>>{ } // Alias, agar namanya lebih rapi saja
     }
 }
