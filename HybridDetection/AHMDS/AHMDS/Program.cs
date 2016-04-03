@@ -15,7 +15,7 @@ namespace AHMDS
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
-            MessageBox.Show(Directory.GetCurrentDirectory());
+            
             if (args.Length > 0)
             {
                 Application.Run(new FormSingleAnalyzer(args[0]));
