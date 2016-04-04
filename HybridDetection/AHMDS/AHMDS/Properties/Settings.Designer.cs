@@ -36,7 +36,7 @@ namespace AHMDS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\Project\\AHMDS\\StaticDetection\\perl\\bin\\perl.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Perl\\perl\\bin\\perl.exe")]
         public string PerlLocation {
             get {
                 return ((string)(this["PerlLocation"]));
@@ -48,7 +48,7 @@ namespace AHMDS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Sandbox\\Andre\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Sandbox\\AHMDS")]
         public string SandboxieBoxLocation {
             get {
                 return ((string)(this["SandboxieBoxLocation"]));
@@ -137,7 +137,7 @@ namespace AHMDS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("120")]
         public int DynamicAnalysisDuration {
             get {
                 return ((int)(this["DynamicAnalysisDuration"]));

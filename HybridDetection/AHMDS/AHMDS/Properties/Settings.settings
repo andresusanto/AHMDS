@@ -11,10 +11,10 @@
       <Value Profile="(Default)">Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\DB\ahmds.accdb;Persist Security Info=True</Value>
     </Setting>
     <Setting Name="PerlLocation" Type="System.String" Scope="User">
-      <Value Profile="(Default)">D:\Project\AHMDS\StaticDetection\perl\bin\perl.exe</Value>
+      <Value Profile="(Default)">C:\Perl\perl\bin\perl.exe</Value>
     </Setting>
     <Setting Name="SandboxieBoxLocation" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Sandbox\Andre\</Value>
+      <Value Profile="(Default)">C:\Sandbox\AHMDS</Value>
     </Setting>
     <Setting Name="SandboxieDllLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Program Files\Sandboxie\32\SbieDll.dll</Value>
@@ -40,7 +40,7 @@
       <Value Profile="(Default)">450</Value>
     </Setting>
     <Setting Name="DynamicAnalysisDuration" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">10</Value>
+      <Value Profile="(Default)">120</Value>
     </Setting>
   </Settings>
 </SettingsFile>
