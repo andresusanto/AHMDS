@@ -48,7 +48,7 @@ namespace AHMDS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Sandbox\\AHMDS")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Sandbox\\AHMDS\\")]
         public string SandboxieBoxLocation {
             get {
                 return ((string)(this["SandboxieBoxLocation"]));

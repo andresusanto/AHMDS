@@ -14,7 +14,7 @@
       <Value Profile="(Default)">C:\Perl\perl\bin\perl.exe</Value>
     </Setting>
     <Setting Name="SandboxieBoxLocation" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Sandbox\AHMDS</Value>
+      <Value Profile="(Default)">C:\Sandbox\AHMDS\</Value>
     </Setting>
     <Setting Name="SandboxieDllLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Program Files\Sandboxie\32\SbieDll.dll</Value>
