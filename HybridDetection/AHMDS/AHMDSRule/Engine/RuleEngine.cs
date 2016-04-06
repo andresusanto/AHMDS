@@ -5,6 +5,7 @@ using System.Text;
 using SbsSW.SwiPlCs;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace AHMDSRule.Engine
 {
