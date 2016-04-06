@@ -97,13 +97,12 @@ namespace AHMDS.Engine
                 // jika program tersebut lolos dari tahap static analysis, lakukan dynamic
                 updateStatus(DYNAMIC_INITIALIZED);
 
-                updateAndFinish(result);
 
-                //isBusy = false; // izinkan analisis statik lainnya dimulai
-                //ProcessQueue();
+                isBusy = false; // izinkan analisis statik lainnya dimulai
+                ProcessQueue();
 
-                //dynamicObject = new DynamicAnalyzer.DynamicObject(image_address, dynamicFinished, dynamicProgressWatcher);
-                //DynamicAnalyzer.AddQueue(dynamicObject);
+                dynamicObject = new DynamicAnalyzer.DynamicObject(image_address, dynamicFinished, dynamicProgressWatcher);
+                DynamicAnalyzer.AddQueue(dynamicObject);
             }
 
             public void Terminate()

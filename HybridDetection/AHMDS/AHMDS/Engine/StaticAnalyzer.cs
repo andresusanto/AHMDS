@@ -73,21 +73,18 @@ namespace AHMDS.Engine
                 CleanUp(extractedFileNames); // hapus file-file yang dihasilkan library
             }
 
-            return new MalwareInfo(MalwareInfo.NEGATIVE, "No known malicious code detected. Program's API Calls threat is under specified threshold.", 0, null);
-
-
             // lakukan pemeriksaan terhadap sekuens API Call program
-            //List<string> apiCalls = extractAPICalls(FileName);
-            //RuleEngine.CalculationResult apiResult = RuleEngine.CalculateAPICalls(apiCalls.ToArray());
+            List<string> apiCalls = extractAPICalls(FileName);
+            RuleEngine.CalculationResult apiResult = RuleEngine.CalculateAPICalls(apiCalls.ToArray());
 
-            //if (apiResult.Score > Properties.Settings.Default.APICallScoreThreshold)
-            //{
-            //    return new MalwareInfo(MalwareInfo.POSITIVE, "Malicious API Calls detected", apiResult.Score, apiResult.Explanation);
-            //}
-            //else
-            //{
-            //    return new MalwareInfo(MalwareInfo.NEGATIVE, "No known malicious code detected. Program's API Calls threat is under specified threshold.", apiResult.Score, apiResult.Explanation);
-            //}
+            if (apiResult.Score > Properties.Settings.Default.APICallScoreThreshold)
+            {
+                return new MalwareInfo(MalwareInfo.POSITIVE, "Malicious API Calls detected", apiResult.Score, apiResult.Explanation);
+            }
+            else
+            {
+                return new MalwareInfo(MalwareInfo.NEGATIVE, "No known malicious code detected. Program's API Calls threat is under specified threshold.", apiResult.Score, apiResult.Explanation);
+            }
         }
 
         private List<string> extractAPICalls(string FileName)
