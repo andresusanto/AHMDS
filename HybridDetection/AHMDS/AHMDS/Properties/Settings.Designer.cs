@@ -113,7 +113,7 @@ namespace AHMDS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("400")]
         public int MalwareScoreThreshold {
             get {
                 return ((int)(this["MalwareScoreThreshold"]));
@@ -125,7 +125,7 @@ namespace AHMDS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("450")]
+        [global::System.Configuration.DefaultSettingValueAttribute("250")]
         public int APICallScoreThreshold {
             get {
                 return ((int)(this["APICallScoreThreshold"]));
