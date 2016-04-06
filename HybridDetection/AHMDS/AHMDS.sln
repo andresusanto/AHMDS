@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AHMDS", "AHMDS\AHMDS.csproj", "{40DFA0C5-8A3D-4A12-B5FD-B6592E2130F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AHMDSRule", "AHMDSRule\AHMDSRule.csproj", "{5C603B45-7BEE-46A5-AA54-F637D5D77BF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,10 @@ Global
 		{40DFA0C5-8A3D-4A12-B5FD-B6592E2130F8}.Debug|x86.Build.0 = Debug|x86
 		{40DFA0C5-8A3D-4A12-B5FD-B6592E2130F8}.Release|x86.ActiveCfg = Release|x86
 		{40DFA0C5-8A3D-4A12-B5FD-B6592E2130F8}.Release|x86.Build.0 = Release|x86
+		{5C603B45-7BEE-46A5-AA54-F637D5D77BF5}.Debug|x86.ActiveCfg = Debug|x86
+		{5C603B45-7BEE-46A5-AA54-F637D5D77BF5}.Debug|x86.Build.0 = Debug|x86
+		{5C603B45-7BEE-46A5-AA54-F637D5D77BF5}.Release|x86.ActiveCfg = Release|x86
+		{5C603B45-7BEE-46A5-AA54-F637D5D77BF5}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,7 +6,7 @@ using SbsSW.SwiPlCs;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace AHMDS.Engine
+namespace AHMDSRule.Engine
 {
     class RuleEngine
     {
@@ -142,7 +142,7 @@ namespace AHMDS.Engine
             {
                 initAPI();
                 StringBuilder sb = new StringBuilder();
-                Console.WriteLine(PlQuery.PlCall("consult('Rules/APICallRules.pl')"));
+                PlQuery.PlCall("consult('Rules/APICallRules.pl')");
 
                 PlTerm listApi = PlTerm.PlVar();
                 PlTerm tailApi = PlTerm.PlTail(listApi);
