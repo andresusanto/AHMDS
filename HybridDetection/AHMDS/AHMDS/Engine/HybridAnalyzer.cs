@@ -8,15 +8,20 @@ namespace AHMDS.Engine
 {
     public class HybridAnalyzer : Analyzer
     {
+        private static readonly object prologLock = new object();
+
         private static Queue<HybridObject> QueueStatic = new Queue<HybridObject>();  //queue yang digunakan untuk menampung antrian analisis statis
         private static bool isBusy = false; // agar tidak memakan banyak memory (mungkin dapat mengakibatkan masalah baru), hanya satu analisis statik yang dijalankan dalam satu waktu
         private static StaticAnalyzer staticAnalyzer = new StaticAnalyzer();
 
         public static void ProcessQueue()
         {
-            if (!isBusy && QueueStatic.Count > 0)
+            lock (prologLock) // hanya boleh satu thread yang berkomunikasi dengan swi prolog dalam satu waktu
             {
-                QueueStatic.Dequeue().Start();
+                if (!isBusy && QueueStatic.Count > 0)
+                {
+                    QueueStatic.Dequeue().Start();
+                }
             }
         }
 
