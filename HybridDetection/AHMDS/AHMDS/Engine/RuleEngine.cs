@@ -5,6 +5,7 @@ using System.Text;
 using SbsSW.SwiPlCs;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace AHMDS.Engine
 {
@@ -132,48 +133,78 @@ namespace AHMDS.Engine
             }
         }
 
+        public class PrologMarshal : MarshalByRefObject
+        {
+
+            private void initProlog()
+            {
+                String[] param = { "-q" };
+                PlEngine.Initialize(param);
+            }
+
+            public CalculationResult CalculateAPICalls(string[] apiCalls)
+            {
+                int score = 0;
+                List<string> explanation = new List<string>();
+
+                lock (prologLock) // hanya boleh satu thread yang berkomunikasi dengan swi prolog dalam satu waktu
+                {
+                    initProlog();
+                    StringBuilder sb = new StringBuilder();
+                    Console.WriteLine(PlQuery.PlCall("consult('Rules/APICallRules.pl')"));
+
+                    PlTerm listApi = PlTerm.PlVar();
+                    PlTerm tailApi = PlTerm.PlTail(listApi);
+
+                    // membuat list dari apiCalls
+                    foreach (string api in apiCalls)
+                    {
+                        sb.Append('"'); sb.Append(api); sb.Append('"');
+                        tailApi.Append(PlTerm.PlString(sb.ToString()));
+                        sb.Clear();
+                    }
+                    tailApi.Close();
+
+                    sb.Append("score("); sb.Append(listApi.ToString()); sb.Append(", X)");
+
+                    // lakukan query ke knowledge dengan list yang dibentuk
+                    using (var q = new PlQuery(sb.ToString()))
+                    {
+                        score = Int32.Parse(q.SolutionVariables.First()["X"].ToString());
+                    }
+
+                    // query explanation yang dihasilkan
+                    using (var q = new PlQuery("explanation(X)"))
+                    {
+                        explanation.AddRange(q.SolutionVariables.First()["X"].ToListString());
+                        explanation = explanation.Distinct().ToList();
+                    }
+
+                    PlEngine.PlCleanup();
+                }
+
+                return new CalculationResult(score, explanation);
+            }
+        }
+
         public static CalculationResult CalculateAPICalls(string[] apiCalls)
         {
-            int score = 0;
-            List<string> explanation = new List<string>();
+            AppDomainSetup ads = new AppDomainSetup();
+            ads.ApplicationBase = AppDomain.CurrentDomain.BaseDirectory;
 
-            lock (prologLock) // hanya boleh satu thread yang berkomunikasi dengan swi prolog dalam satu waktu
-            {
-                initAPI();
-                StringBuilder sb = new StringBuilder();
-                Console.WriteLine(PlQuery.PlCall("consult('Rules/APICallRules.pl')"));
+            ads.DisallowBindingRedirects = false;
+            ads.DisallowCodeDownload = true;
+            ads.ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
 
-                PlTerm listApi = PlTerm.PlVar();
-                PlTerm tailApi = PlTerm.PlTail(listApi);
 
-                // membuat list dari apiCalls
-                foreach (string api in apiCalls)
-                {
-                    sb.Append('"'); sb.Append(api); sb.Append('"');
-                    tailApi.Append(PlTerm.PlString(sb.ToString()));
-                    sb.Clear();
-                }
-                tailApi.Close();
+            AppDomain ad2 = AppDomain.CreateDomain("AD #2", null, ads);
+            PrologMarshal prologMarshal = (PrologMarshal)ad2.CreateInstanceAndUnwrap(Assembly.GetEntryAssembly().FullName, typeof(PrologMarshal).FullName);
 
-                sb.Append("score("); sb.Append(listApi.ToString()); sb.Append(", X)");
+            CalculationResult result = prologMarshal.CalculateAPICalls(apiCalls);
 
-                // lakukan query ke knowledge dengan list yang dibentuk
-                using (var q = new PlQuery(sb.ToString()))
-                {
-                    score = Int32.Parse(q.SolutionVariables.First()["X"].ToString());
-                }
+            AppDomain.Unload(ad2);
 
-                // query explanation yang dihasilkan
-                using (var q = new PlQuery("explanation(X)"))
-                {
-                    explanation.AddRange(q.SolutionVariables.First()["X"].ToListString());
-                    explanation = explanation.Distinct().ToList();
-                }
-
-                PlEngine.PlCleanup();
-            }
-            
-            return new CalculationResult(score, explanation);
+            return result;
         }
 
         public static CalculationResult CalculateRegistries(Dictionary<string, List<string>> registries)

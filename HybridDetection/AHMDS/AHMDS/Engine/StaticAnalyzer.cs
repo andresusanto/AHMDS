@@ -12,6 +12,7 @@ namespace AHMDS.Engine
 {
     public class StaticAnalyzer
     {
+        private static readonly object dbLock = new object();
         private signatureTableAdapter SignatureTAdapter;
         private verifiedTableAdapter VerifiedTAdapter;
         private MD5 Md5;
@@ -27,12 +28,13 @@ namespace AHMDS.Engine
         public bool Verify(string fileName)
         {
             X509Certificate cert = WinTrust.GetVerifiedCert(fileName);
-            
-            if (cert != null){
+
+            if (cert != null)
+            {
                 AHMDS.DB.ahmdsDataSet.verifiedDataTable result = VerifiedTAdapter.GetDataBySubjectIssuer(cert.Subject, cert.Issuer);
                 if (result.Count > 0) return true;
             }
-            
+
             return false;
         }
 
@@ -71,18 +73,21 @@ namespace AHMDS.Engine
                 CleanUp(extractedFileNames); // hapus file-file yang dihasilkan library
             }
 
-            // lakukan pemeriksaan terhadap sekuens API Call program
-            List<string> apiCalls = extractAPICalls(FileName);
-            RuleEngine.CalculationResult apiResult = RuleEngine.CalculateAPICalls(apiCalls.ToArray());
+            return new MalwareInfo(MalwareInfo.NEGATIVE, "No known malicious code detected. Program's API Calls threat is under specified threshold.", 0, null);
 
-            if (apiResult.Score > Properties.Settings.Default.APICallScoreThreshold)
-            {
-                return new MalwareInfo(MalwareInfo.POSITIVE, "Malicious API Calls detected", apiResult.Score, apiResult.Explanation);
-            }
-            else
-            {
-                return new MalwareInfo(MalwareInfo.NEGATIVE, "No known malicious code detected. Program's API Calls threat is under specified threshold.", apiResult.Score, apiResult.Explanation);
-            }
+
+            // lakukan pemeriksaan terhadap sekuens API Call program
+            //List<string> apiCalls = extractAPICalls(FileName);
+            //RuleEngine.CalculationResult apiResult = RuleEngine.CalculateAPICalls(apiCalls.ToArray());
+
+            //if (apiResult.Score > Properties.Settings.Default.APICallScoreThreshold)
+            //{
+            //    return new MalwareInfo(MalwareInfo.POSITIVE, "Malicious API Calls detected", apiResult.Score, apiResult.Explanation);
+            //}
+            //else
+            //{
+            //    return new MalwareInfo(MalwareInfo.NEGATIVE, "No known malicious code detected. Program's API Calls threat is under specified threshold.", apiResult.Score, apiResult.Explanation);
+            //}
         }
 
         private List<string> extractAPICalls(string FileName)
@@ -140,19 +145,30 @@ namespace AHMDS.Engine
             StringBuilder sb = new StringBuilder();
             AHMDS.DB.ahmdsDataSet.signatureDataTable resultTable;
 
-            byte[] hashbyte = Md5.ComputeHash(file);
-            foreach (byte b in hashbyte) sb.Append(b.ToString("x2").ToLower());
-            file.Close();
-
-            resultTable = SignatureTAdapter.GetDataByHash(sb.ToString());
-
-            if (resultTable.Count > 0)
+            lock (dbLock)
             {
-                return new MalwareInfo(MalwareInfo.POSITIVE, "Detected as " + resultTable.Rows[0][1].ToString(), 999, null);
-            }
-            else
-            {
-                return new MalwareInfo(MalwareInfo.NEGATIVE, "Nothing found in database", 0, null);
+                byte[] hashbyte = Md5.ComputeHash(file);
+                foreach (byte b in hashbyte) sb.Append(b.ToString("x2").ToLower());
+                file.Close();
+
+                string tes = sb.ToString();
+                try
+                {
+                    resultTable = SignatureTAdapter.GetDataByHash(tes);
+
+                    if (resultTable.Count > 0)
+                    {
+                        return new MalwareInfo(MalwareInfo.POSITIVE, "Detected as " + resultTable.Rows[0][1].ToString(), 999, null);
+                    }
+                    else
+                    {
+                        return new MalwareInfo(MalwareInfo.NEGATIVE, "Nothing found in database", 0, null);
+                    }
+                }
+                catch
+                {
+                    return new MalwareInfo(MalwareInfo.NEGATIVE, "Nothing found in database (N).", 0, null);
+                }
             }
         }
     }

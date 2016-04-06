@@ -8,7 +8,8 @@ namespace AHMDS.Engine
 {
     public class HybridAnalyzer : Analyzer
     {
-        private static readonly object prologLock = new object();
+        private static readonly object processLock = new object();
+        private static readonly object startLock = new object();
 
         private static Queue<HybridObject> QueueStatic = new Queue<HybridObject>();  //queue yang digunakan untuk menampung antrian analisis statis
         private static bool isBusy = false; // agar tidak memakan banyak memory (mungkin dapat mengakibatkan masalah baru), hanya satu analisis statik yang dijalankan dalam satu waktu
@@ -16,7 +17,7 @@ namespace AHMDS.Engine
 
         public static void ProcessQueue()
         {
-            lock (prologLock) // hanya boleh satu thread yang berkomunikasi dengan swi prolog dalam satu waktu
+            lock (processLock)
             {
                 if (!isBusy && QueueStatic.Count > 0)
                 {
@@ -51,17 +52,21 @@ namespace AHMDS.Engine
             private List<string> staticExplanations;
             private int staticScore;
 
-            public HybridObject (string image_address, ResultHandler resultHandler, StatusHandler statusHandler) : base(image_address, resultHandler, statusHandler)
+            public HybridObject(string image_address, ResultHandler resultHandler, StatusHandler statusHandler)
+                : base(image_address, resultHandler, statusHandler)
             {
                 this.status = NOT_STARTED;
             }
 
             public void Start()
             {
-                isBusy = true;
+                lock (startLock)
+                {
+                    isBusy = true;
 
-                analysisThread = new Thread(Analyzer);
-                analysisThread.Start();
+                    analysisThread = new Thread(Analyzer);
+                    analysisThread.Start();
+                }
             }
 
             private void Analyzer()
@@ -92,11 +97,13 @@ namespace AHMDS.Engine
                 // jika program tersebut lolos dari tahap static analysis, lakukan dynamic
                 updateStatus(DYNAMIC_INITIALIZED);
 
-                isBusy = false; // izinkan analisis statik lainnya dimulai
-                ProcessQueue();
+                updateAndFinish(result);
 
-                dynamicObject = new DynamicAnalyzer.DynamicObject(image_address, dynamicFinished, dynamicProgressWatcher);
-                DynamicAnalyzer.AddQueue(dynamicObject);
+                //isBusy = false; // izinkan analisis statik lainnya dimulai
+                //ProcessQueue();
+
+                //dynamicObject = new DynamicAnalyzer.DynamicObject(image_address, dynamicFinished, dynamicProgressWatcher);
+                //DynamicAnalyzer.AddQueue(dynamicObject);
             }
 
             public void Terminate()
@@ -104,11 +111,11 @@ namespace AHMDS.Engine
                 if (status == NOT_STARTED) return; // analisis belum dimulai
 
                 if (dynamicObject != null) dynamicObject.Terminate();
-                
+
                 analysisThread.Abort();
                 isBusy = false;
-                
-                
+
+
                 //ProcessQueue();
             }
 
@@ -132,7 +139,9 @@ namespace AHMDS.Engine
             {
                 result.Score += staticScore;
                 result.Explanation.AddRange(staticExplanations);
-                updateAndFinish(result);
+                //updateAndFinish(result);
+                updateFinish(result);
+                updateStatus(FINISHED);
             }
 
             private void updateAndFinish(MalwareInfo result)
