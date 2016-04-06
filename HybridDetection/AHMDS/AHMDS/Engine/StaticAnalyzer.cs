@@ -144,15 +144,22 @@ namespace AHMDS.Engine
             foreach (byte b in hashbyte) sb.Append(b.ToString("x2").ToLower());
             file.Close();
 
-            resultTable = SignatureTAdapter.GetDataByHash(sb.ToString());
+            try
+            {
+                resultTable = SignatureTAdapter.GetDataByHash(sb.ToString());
 
-            if (resultTable.Count > 0)
-            {
-                return new MalwareInfo(MalwareInfo.POSITIVE, "Detected as " + resultTable.Rows[0][1].ToString(), 999, null);
+                if (resultTable.Count > 0)
+                {
+                    return new MalwareInfo(MalwareInfo.POSITIVE, "Detected as " + resultTable.Rows[0][1].ToString(), 999, null);
+                }
+                else
+                {
+                    return new MalwareInfo(MalwareInfo.NEGATIVE, "Nothing found in database", 0, null);
+                }
             }
-            else
+            catch
             {
-                return new MalwareInfo(MalwareInfo.NEGATIVE, "Nothing found in database", 0, null);
+                return new MalwareInfo(MalwareInfo.NEGATIVE, "Nothing found in database (N).", 0, null);
             }
         }
     }
