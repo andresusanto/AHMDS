@@ -23,8 +23,6 @@ namespace AHMDSRule
             Console.WriteLine(result.Score);
             foreach (string explanation in result.Explanation)
                 Console.WriteLine(explanation);
-
-            Console.ReadLine();
         }
     }
 }
