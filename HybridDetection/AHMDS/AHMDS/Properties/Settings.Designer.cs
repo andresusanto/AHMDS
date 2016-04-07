@@ -125,7 +125,7 @@ namespace AHMDS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("250")]
+        [global::System.Configuration.DefaultSettingValueAttribute("350")]
         public int APICallScoreThreshold {
             get {
                 return ((int)(this["APICallScoreThreshold"]));

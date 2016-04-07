@@ -16,8 +16,12 @@ namespace AHMDS
     {
         private List<HybridAnalyzer.HybridObject> currentAnalyzed;
 
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        private static extern bool AllocConsole();
+
         public FormBatchAnalyzer()
         {
+            AllocConsole();
             InitializeComponent();
             FormBatchAnalyzer.CheckForIllegalCrossThreadCalls = false;
             currentAnalyzed = new List<HybridAnalyzer.HybridObject>();

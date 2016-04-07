@@ -1,26 +1,26 @@
-100,Program modifies files inside Windows system directory. ,drive\\[A-Z]\\Windows.+
-200,Program creates executable file in AppData folder. ,user\\current\\AppData.+\.exe
+520,Program modifies files inside Windows system directory. ,drive\\[A-Z]\\Windows.+
+500,Program creates executable file in AppData folder. ,user\\current\\AppData.+\.exe
 200,Program creates executable file in Program Files folder. ,drive\\[A-Z]\\Program Files.+\.exe
-20,Program creates executable file. ,.+\.exe
-200,Program disguises as winlogon.exe file. ,.+winlogon\.exe
-200,Program disguises as jusched.exe file. ,.+jusched\.exe
-200,Program disguises as CDProxyServ.exe file. ,.+CDProxyServ\.exe
-200,Program disguises as svchost.exe file. ,.+svchost\.exe
-200,Program disguises as taskmgr.exe file. ,.+taskmgr\.exe
-200,Program disguises as wdfmgr.exe file. ,.+wdfmgr\.exe
-200,Program disguises as csrss.exe file. ,.+csrss\.exe
-200,Program disguises as csrcs.exe file. ,.+csrcs\.exe
-200,Program disguises as ctfmon.exe file. ,.+ctfmon\.exe
-200,Program disguises as services.exe file. ,.+services\.exe
-200,Program disguises as qttask.exe file. ,.+qttask\.exe
-200,Program disguises as spoolsv.exe file. ,.+spoolsv\.exe
-200,Program disguises as winsys2.exe file. ,.+winsys2\.exe
-200,Program disguises as rphelperapp.exe file. ,.+rphelperapp\.exe
-200,Program disguises as lsass.exe file. ,.+lsass\.exe
-200,Program disguises as smss.exe file. ,.+smss\.exe
-200,Program disguises as rundll32.exe file. ,.+rundll32\.exe
-200,Program disguises as explorer.exe file. ,.+explorer\.exe
-200,Program disguises as iexplore.exe file. ,.+iexplore\.exe
-200,Program disguises as acrotray.exe file. ,.+acrotray\.exe
-200,Program disguises as ADService.exe file. ,.+ADService\.exe
-200,Program disguises as AppServices.exe file. ,.+AppServices\.exe
+100,Program creates executable file. ,.+\.exe
+800,Program disguises as winlogon.exe file. ,.+winlogon\.exe
+800,Program disguises as jusched.exe file. ,.+jusched\.exe
+800,Program disguises as CDProxyServ.exe file. ,.+CDProxyServ\.exe
+800,Program disguises as svchost.exe file. ,.+svchost\.exe
+800,Program disguises as taskmgr.exe file. ,.+taskmgr\.exe
+800,Program disguises as wdfmgr.exe file. ,.+wdfmgr\.exe
+800,Program disguises as csrss.exe file. ,.+csrss\.exe
+800,Program disguises as csrcs.exe file. ,.+csrcs\.exe
+800,Program disguises as ctfmon.exe file. ,.+ctfmon\.exe
+800,Program disguises as services.exe file. ,.+services\.exe
+800,Program disguises as qttask.exe file. ,.+qttask\.exe
+800,Program disguises as spoolsv.exe file. ,.+spoolsv\.exe
+800,Program disguises as winsys2.exe file. ,.+winsys2\.exe
+800,Program disguises as rphelperapp.exe file. ,.+rphelperapp\.exe
+800,Program disguises as lsass.exe file. ,.+lsass\.exe
+800,Program disguises as smss.exe file. ,.+smss\.exe
+800,Program disguises as rundll32.exe file. ,.+rundll32\.exe
+800,Program disguises as explorer.exe file. ,.+explorer\.exe
+800,Program disguises as iexplore.exe file. ,.+iexplore\.exe
+800,Program disguises as acrotray.exe file. ,.+acrotray\.exe
+800,Program disguises as ADService.exe file. ,.+ADService\.exe
+800,Program disguises as AppServices.exe file. ,.+AppServices\.exe

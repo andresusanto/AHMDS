@@ -9,64 +9,64 @@ del_explanation :- retractall(explanation(_)), asserta(explanation([])).
 % score individual
 	
 	% Anti-reversing / Anti-debugging API
-	mi_score(70, "IsDebuggerPresent") :- add_explanation(["Program checks whether itself is being debugged by user-mode debugger."]).
-	mi_score(70, "CheckRemoteDebuggerPresent") :- add_explanation(["Program checks whether itself is being debugged"]).
-	mi_score(70, "NTQueryInformationProcess") :- add_explanation(["Program retreives information about a process."]).
-	mi_score(70, "OutputDebugString") :- add_explanation(["Program sends strings to a debugger."]).
-	mi_score(70, "QueryPerformanceCounter") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (QueryPerformanceCounter)."]).
-	mi_score(20, "GetTickCount") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (GetTickCount)."]).
-	mi_score(20, "timeGetTime") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (timeGetTime)."]).
-	mi_score(30, "ZwClose") :- add_explanation(["Program generate an exception when it is being debugged."]).
-	mi_score(70, "DebugActiveProcess") :- add_explanation(["Program debug active processs."]).
+	mi_score(570, "IsDebuggerPresent") :- add_explanation(["Program checks whether itself is being debugged by user-mode debugger."]).
+	mi_score(570, "CheckRemoteDebuggerPresent") :- add_explanation(["Program checks whether itself is being debugged"]).
+	mi_score(270, "NTQueryInformationProcess") :- add_explanation(["Program retreives information about a process."]).
+	mi_score(270, "OutputDebugString") :- add_explanation(["Program sends strings to a debugger."]).
+	mi_score(180, "QueryPerformanceCounter") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (QueryPerformanceCounter)."]).
+	mi_score(80, "GetTickCount") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (GetTickCount)."]).
+	mi_score(50, "timeGetTime") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (timeGetTime)."]).
+	mi_score(90, "ZwClose") :- add_explanation(["Program generate an exception when it is being debugged."]).
+	mi_score(370, "DebugActiveProcess") :- add_explanation(["Program debug active processs."]).
 	
 	% Password dumping API
-	mi_score(30, "SamIConnect") :- add_explanation(["Program connects to SAM (Security Account Manager)."]).
-	mi_score(30, "SamrQueryInformationUser") :- add_explanation(["Program query user's information to SAM (Security Account Manager)."]).
-	mi_score(30, "SamIGetPrivateData") :- add_explanation(["Program gets user's provate data to SAM (Security Account Manager)."]).
-	mi_score(70, "SystemFunction025") :- add_explanation(["Program decrypts user's password hashes."]).
-	mi_score(70, "SystemFunction027") :- add_explanation(["Program decrypts user's password hashes."]).
-	mi_score(30, "LsaEnumerateLogonSessions") :- add_explanation(["Program obtains a list of locally unique identifiers (contains usernames/domains for each logon)."]).
+	mi_score(230, "SamIConnect") :- add_explanation(["Program connects to SAM (Security Account Manager)."]).
+	mi_score(230, "SamrQueryInformationUser") :- add_explanation(["Program query user's information to SAM (Security Account Manager)."]).
+	mi_score(230, "SamIGetPrivateData") :- add_explanation(["Program gets user's provate data to SAM (Security Account Manager)."]).
+	mi_score(270, "SystemFunction025") :- add_explanation(["Program decrypts user's password hashes."]).
+	mi_score(270, "SystemFunction027") :- add_explanation(["Program decrypts user's password hashes."]).
+	mi_score(230, "LsaEnumerateLogonSessions") :- add_explanation(["Program obtains a list of locally unique identifiers (contains usernames/domains for each logon)."]).
 	
 	% obfuscation api
-	mi_score(20, "CryptAcquireContext") :- add_explanation(["Program initializes Windows encryption (Obfuscation)."]).
+	mi_score(90, "CryptAcquireContext") :- add_explanation(["Program initializes Windows encryption (Obfuscation)."]).
 	
 	% keylogging activity
-	mi_score(120, "GetAsyncKeyState") :- add_explanation(["Program logs user's keyboard inputs."]).
-	mi_score(120, "GetKeyState") :- add_explanation(["Program logs user's keyboard inputs."]).
-	mi_score(60, "GetForegroundWindow") :- add_explanation(["Program monitors active windows (so they can be logged)."]).
+	mi_score(420, "GetAsyncKeyState") :- add_explanation(["Program logs user's keyboard inputs."]).
+	mi_score(420, "GetKeyState") :- add_explanation(["Program logs user's keyboard inputs."]).
+	mi_score(260, "GetForegroundWindow") :- add_explanation(["Program monitors active windows (so they can be logged)."]).
 	
 	% shellcode API
-	mi_score(20, "WinExec") :- add_explanation(["Program executes other program."]).
-	mi_score(20, "CreateProcessW") :- add_explanation(["Program creates new process."]).
-	mi_score(20, "CreateProcessA") :- add_explanation(["Program creates new process."]).
+	mi_score(90, "WinExec") :- add_explanation(["Program executes other program."]).
+	mi_score(90, "CreateProcessW") :- add_explanation(["Program creates new process."]).
+	mi_score(90, "CreateProcessA") :- add_explanation(["Program creates new process."]).
 	
 	% registry API
-	mi_score(20, "RegOpenKeyEx") :- add_explanation(["Program opens registry keys."]).
-	mi_score(20, "RegGetValue") :- add_explanation(["Program gets registry values."]).
-	mi_score(60, "RegSetValueEx") :- add_explanation(["Program sets registry values."]).
+	mi_score(90, "RegOpenKeyEx") :- add_explanation(["Program opens registry keys."]).
+	mi_score(90, "RegGetValue") :- add_explanation(["Program gets registry values."]).
+	mi_score(160, "RegSetValueEx") :- add_explanation(["Program sets registry values."]).
 	
 	
 	% service related API
-	mi_score(50, "OpenSCManagerW") :- add_explanation(["Program establishes a connection to the service control manager on the specified computer and opens the specified service control manager database"]).
-	mi_score(50, "OpenSCManagerA") :- add_explanation(["Program establishes a connection to the service control manager on the specified computer and opens the specified service control manager database"]).
-	mi_score(100, "CreateService") :- add_explanation(["Program creates a service object and adds it to the specified service control manager database."]).
-	mi_score(100, "StartService") :- add_explanation(["Program starts a service."]).
+	mi_score(350, "OpenSCManagerW") :- add_explanation(["Program establishes a connection to the service control manager on the specified computer and opens the specified service control manager database"]).
+	mi_score(350, "OpenSCManagerA") :- add_explanation(["Program establishes a connection to the service control manager on the specified computer and opens the specified service control manager database"]).
+	mi_score(500, "CreateService") :- add_explanation(["Program creates a service object and adds it to the specified service control manager database."]).
+	mi_score(500, "StartService") :- add_explanation(["Program starts a service."]).
 	
 	% suspicious APIs
-	mi_score(20, "OpenProcessToken") :- add_explanation(["Program adjusts its access token."]).
-	mi_score(20, "LookupPrivilegeValueA") :- add_explanation(["Program adjusts its access token."]).
-	mi_score(20, "AdjustTokenPrivileges") :- add_explanation(["Program adjusts its access token."]).
-	mi_score(20, "CreateToolhelp32Snapshot") :- add_explanation(["Program searches through running processes."]).
-	mi_score(30, "Process32First") :- add_explanation(["Program searches through running processes."]).
-	mi_score(30, "Process32Next") :- add_explanation(["Program searches through running processes."]).
-	mi_score(50, "SetWindowsHookEx") :- add_explanation(["Program sets a hook."]).
-	mi_score(50, "UnhookWindowsHookEx") :- add_explanation(["Program removes a hook."]).
-	mi_score(20, "ZwUnmapViewOfSection") :- add_explanation(["Program releases memory in system."]).
-	mi_score(35, "NtQuerySystemInformation") :- add_explanation(["Program retrieves some system information."]).
-	mi_score(35, "NtQueryInformationProcess") :- add_explanation(["Program retrieves some system process information."]).
-	mi_score(35, "NtQueryInformationThread") :- add_explanation(["Program retrieves some system thread information."]).
-	mi_score(35, "NtQueryInformationFile") :- add_explanation(["Program retrieves some system file information."]).
-	mi_score(35, "NtQueryInformationKey") :- add_explanation(["Program retrieves some system key information."]).
+	mi_score(120, "OpenProcessToken") :- add_explanation(["Program adjusts its access token."]).
+	mi_score(120, "LookupPrivilegeValueA") :- add_explanation(["Program adjusts its access token."]).
+	mi_score(120, "AdjustTokenPrivileges") :- add_explanation(["Program adjusts its access token."]).
+	mi_score(120, "CreateToolhelp32Snapshot") :- add_explanation(["Program searches through running processes."]).
+	mi_score(130, "Process32First") :- add_explanation(["Program searches through running processes."]).
+	mi_score(130, "Process32Next") :- add_explanation(["Program searches through running processes."]).
+	mi_score(350, "SetWindowsHookEx") :- add_explanation(["Program sets a hook."]).
+	mi_score(350, "UnhookWindowsHookEx") :- add_explanation(["Program removes a hook."]).
+	mi_score(120, "ZwUnmapViewOfSection") :- add_explanation(["Program releases memory in system."]).
+	mi_score(335, "NtQuerySystemInformation") :- add_explanation(["Program retrieves some system information."]).
+	mi_score(335, "NtQueryInformationProcess") :- add_explanation(["Program retrieves some system process information."]).
+	mi_score(335, "NtQueryInformationThread") :- add_explanation(["Program retrieves some system thread information."]).
+	mi_score(335, "NtQueryInformationFile") :- add_explanation(["Program retrieves some system file information."]).
+	mi_score(335, "NtQueryInformationKey") :- add_explanation(["Program retrieves some system key information."]).
 	
 	
 	mi_score(0, _).
@@ -75,16 +75,16 @@ del_explanation :- retractall(explanation(_)), asserta(explanation([])).
 	i_score([], 0).
 	
 % score keterhubungan (suatu kombinasi API akan menghasilkan skor lebih tinggi dibanding API tersebut jalan secara terpisah2)
-	ml_score(70, ["NtQueryObject", "ObjectAllTypesInformation"]).
-	ml_score(70, ["NtSetInformationThread", "HideThreadFromDebugger"]).
-	ml_score(70, ["ZwSetInformationThread", "HideThreadFromDebugger"]).
-	ml_score(70, ["SamIConnect", "SamrQueryInformationUser", "SamIGetPrivateData"]).
-	ml_score(100, ["GetAsyncKeyState", "GetForegroundWindow"]).
-	ml_score(100, ["GetKeyState", "GetForegroundWindow"]).
-	ml_score(100, ["CreateService", "StartService"]).
-	ml_score(70, ["OpenProcessToken", "LookupPrivilegeValueA", "AdjustTokenPrivileges"]).
-	ml_score(70, ["CreateToolhelp32Snapshot", "Process32First", "Process32Next"]).
-	ml_score(100, ["SetWindowsHookEx", "UnhookWindowsHookEx"]).
+	ml_score(170, ["NtQueryObject", "ObjectAllTypesInformation"]).
+	ml_score(170, ["NtSetInformationThread", "HideThreadFromDebugger"]).
+	ml_score(170, ["ZwSetInformationThread", "HideThreadFromDebugger"]).
+	ml_score(170, ["SamIConnect", "SamrQueryInformationUser", "SamIGetPrivateData"]).
+	ml_score(200, ["GetAsyncKeyState", "GetForegroundWindow"]).
+	ml_score(200, ["GetKeyState", "GetForegroundWindow"]).
+	ml_score(300, ["CreateService", "StartService"]).
+	ml_score(170, ["OpenProcessToken", "LookupPrivilegeValueA", "AdjustTokenPrivileges"]).
+	ml_score(170, ["CreateToolhelp32Snapshot", "Process32First", "Process32Next"]).
+	ml_score(200, ["SetWindowsHookEx", "UnhookWindowsHookEx"]).
 	
 	ml_explain(["NtQueryObject", "ObjectAllTypesInformation"]) :- add_explanation(["Program looks for DebugObjects which can point to a debugger being present."]).
 	ml_explain(["NtSetInformationThread", "HideThreadFromDebugger"]) :- add_explanation(["Program hides from debugger."]).
