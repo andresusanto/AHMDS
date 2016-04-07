@@ -17,7 +17,6 @@ namespace AHMDS.Engine
         private static Analyzer.RegistryList suspiciousRegistries; // meyimpan daftar registry yang biasa digunakan oleh malware untuk melakukan kegiatan malicious. elemen List<string> [ count ] adalah penjelasan
         private static List<FilesystemRule> suspiciousFiles;
 
-
         private static void initRegistries()
         {
             if (startupRegistries == null)
@@ -93,10 +92,12 @@ namespace AHMDS.Engine
 
             foreach (KeyValuePair<string, List<string>> entry in list)
             {
-                if (entry.Key.Equals(key))
+                string cKey = entry.Key.ToLower();
+                if (cKey.Equals(key))
                     relevant.Add(entry.Key);
-                else if (key.EndsWith("\\") && entry.Key.StartsWith(key))
+                else if (key.EndsWith("\\") && cKey.StartsWith(key))
                     relevant.Add(entry.Key);
+                
             }
 
             return relevant;
@@ -141,7 +142,7 @@ namespace AHMDS.Engine
                 p.Start();
 
                 foreach (string apiCall in apiCalls)
-                    p.StandardInput.WriteLine(apiCall);
+                    p.StandardInput.WriteLine(apiCall.Trim());
                 
                 p.StandardInput.WriteLine("");
                 string extractResult = p.StandardOutput.ReadToEnd(); // baca hasil proses library
@@ -170,7 +171,7 @@ namespace AHMDS.Engine
                 {
                     if (entry.Value == null)
                     {
-                        result.Score += 100;
+                        result.Score += 400;
                         result.Explanation.Add("Startup registry detected at " + reg);
                     }
                     else
@@ -179,7 +180,7 @@ namespace AHMDS.Engine
                         {
                             if (registries[reg].Contains(key))
                             {
-                                result.Score += 100;
+                                result.Score += 400;
                                 result.Explanation.Add("Startup registry detected at " + reg + ", " + key);
                             }
                         }
@@ -196,7 +197,7 @@ namespace AHMDS.Engine
                 {
                     if (entry.Value.Count == 1)
                     {
-                        result.Score += 150;
+                        result.Score += 450;
                         result.Explanation.Add(entry.Value[0]);
                     }
                     else
@@ -205,7 +206,7 @@ namespace AHMDS.Engine
                         {
                             if (registries[reg].Contains(entry.Value[i]))
                             {
-                                result.Score += 150;
+                                result.Score += 450;
                                 result.Explanation.Add(entry.Value[entry.Value.Count - 1] + " (val:" + entry.Value[i] + ")");
                             }
                         }
