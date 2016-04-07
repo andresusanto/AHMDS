@@ -2,27 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SbsSW.SwiPlCs;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace AHMDS.Engine
 {
     class RuleEngine
     {
         private static readonly object prologLock = new object();
-        private static string SWI_HOME_DIR = Properties.Settings.Default.SWIPath;
-
+        
         private static Analyzer.RegistryList startupRegistries; // menyimpan daftar registry yang biasa digunakan oleh malware untuk startup
         private static Analyzer.RegistryList suspiciousRegistries; // meyimpan daftar registry yang biasa digunakan oleh malware untuk melakukan kegiatan malicious. elemen List<string> [ count ] adalah penjelasan
         private static List<FilesystemRule> suspiciousFiles;
 
-        private static void initAPI()
-        {
-            String[] param = { "-q" };
-            PlEngine.Initialize(param);
-        }
 
         private static void initRegistries()
         {
@@ -134,32 +128,35 @@ namespace AHMDS.Engine
             }
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public static CalculationResult CalculateAPICalls(string[] apiCalls)
         {
-            lock (prologLock)
-            {
-                Process p = new Process();
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardInput = true;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.FileName = @"APIRule.dll";
-                p.StartInfo.CreateNoWindow = true;
-                p.Start();
+            string[] result;
+            List<string> explanation;
 
-                foreach (string apiCall in apiCalls)
-                    p.StandardInput.WriteLine(apiCall);
-                
-                p.StandardInput.WriteLine("");
-                string extractResult = p.StandardOutput.ReadToEnd(); // baca hasil proses library
-                p.WaitForExit();
+            Process p = new Process();
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.FileName = @"APIRule.dll";
+            p.StartInfo.CreateNoWindow = true;
+            p.Start();
 
-                string[] result = extractResult.Split('\n');
-                List<string> explanation = new List<string>();
-                for (int i = 1; i < result.Length; i++)
-                    explanation.Add(result[i]);
+            foreach (string apiCall in apiCalls)
+                p.StandardInput.WriteLine(apiCall.Trim());
 
-                return new CalculationResult(Int32.Parse(result[0]), explanation);
-            }
+            p.StandardInput.WriteLine("");
+
+            string extractResult = p.StandardOutput.ReadToEnd(); // baca hasil proses library
+            p.WaitForExit();
+
+            result = extractResult.Split('\n');
+            explanation = new List<string>();
+            for (int i = 1; i < result.Length; i++)
+                explanation.Add(result[i]);
+
+
+            return new CalculationResult(Int32.Parse(result[0]), explanation);
         }
 
         public static CalculationResult CalculateRegistries(Dictionary<string, List<string>> registries)

@@ -40,7 +40,7 @@
       <Value Profile="(Default)">250</Value>
     </Setting>
     <Setting Name="DynamicAnalysisDuration" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">120</Value>
+      <Value Profile="(Default)">10</Value>
     </Setting>
   </Settings>
 </SettingsFile>
