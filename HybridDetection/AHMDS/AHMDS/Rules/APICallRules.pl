@@ -13,8 +13,8 @@ del_explanation :- retractall(explanation(_)), asserta(explanation([])).
 	mi_score(570, "CheckRemoteDebuggerPresent") :- add_explanation(["Program checks whether itself is being debugged"]).
 	mi_score(270, "NTQueryInformationProcess") :- add_explanation(["Program retreives information about a process."]).
 	mi_score(270, "OutputDebugString") :- add_explanation(["Program sends strings to a debugger."]).
-	mi_score(180, "QueryPerformanceCounter") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (QueryPerformanceCounter)."]).
-	mi_score(80, "GetTickCount") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (GetTickCount)."]).
+	mi_score(50, "QueryPerformanceCounter") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (QueryPerformanceCounter)."]).
+	mi_score(50, "GetTickCount") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (GetTickCount)."]).
 	mi_score(50, "timeGetTime") :- add_explanation(["Program analyze whether itself is being debugged by using performance measurement (timeGetTime)."]).
 	mi_score(90, "ZwClose") :- add_explanation(["Program generate an exception when it is being debugged."]).
 	mi_score(370, "DebugActiveProcess") :- add_explanation(["Program debug active processs."]).
@@ -36,9 +36,9 @@ del_explanation :- retractall(explanation(_)), asserta(explanation([])).
 	mi_score(260, "GetForegroundWindow") :- add_explanation(["Program monitors active windows (so they can be logged)."]).
 	
 	% shellcode API
-	mi_score(90, "WinExec") :- add_explanation(["Program executes other program."]).
-	mi_score(90, "CreateProcessW") :- add_explanation(["Program creates new process."]).
-	mi_score(90, "CreateProcessA") :- add_explanation(["Program creates new process."]).
+	mi_score(60, "WinExec") :- add_explanation(["Program executes other program."]).
+	mi_score(50, "CreateProcessW") :- add_explanation(["Program creates new process."]).
+	mi_score(50, "CreateProcessA") :- add_explanation(["Program creates new process."]).
 	
 	% registry API
 	mi_score(90, "RegOpenKeyEx") :- add_explanation(["Program opens registry keys."]).
@@ -53,9 +53,9 @@ del_explanation :- retractall(explanation(_)), asserta(explanation([])).
 	mi_score(500, "StartService") :- add_explanation(["Program starts a service."]).
 	
 	% suspicious APIs
-	mi_score(120, "OpenProcessToken") :- add_explanation(["Program adjusts its access token."]).
-	mi_score(120, "LookupPrivilegeValueA") :- add_explanation(["Program adjusts its access token."]).
-	mi_score(120, "AdjustTokenPrivileges") :- add_explanation(["Program adjusts its access token."]).
+	mi_score(30, "OpenProcessToken") :- add_explanation(["Program adjusts its access token."]).
+	mi_score(30, "LookupPrivilegeValueA") :- add_explanation(["Program adjusts its access token."]).
+	mi_score(30, "AdjustTokenPrivileges") :- add_explanation(["Program adjusts its access token."]).
 	mi_score(120, "CreateToolhelp32Snapshot") :- add_explanation(["Program searches through running processes."]).
 	mi_score(130, "Process32First") :- add_explanation(["Program searches through running processes."]).
 	mi_score(130, "Process32Next") :- add_explanation(["Program searches through running processes."]).
@@ -82,7 +82,6 @@ del_explanation :- retractall(explanation(_)), asserta(explanation([])).
 	ml_score(200, ["GetAsyncKeyState", "GetForegroundWindow"]).
 	ml_score(200, ["GetKeyState", "GetForegroundWindow"]).
 	ml_score(300, ["CreateService", "StartService"]).
-	ml_score(170, ["OpenProcessToken", "LookupPrivilegeValueA", "AdjustTokenPrivileges"]).
 	ml_score(170, ["CreateToolhelp32Snapshot", "Process32First", "Process32Next"]).
 	ml_score(200, ["SetWindowsHookEx", "UnhookWindowsHookEx"]).
 	
@@ -93,7 +92,6 @@ del_explanation :- retractall(explanation(_)), asserta(explanation([])).
 	ml_explain(["GetAsyncKeyState", "GetForegroundWindow"]) :- add_explanation(["Program does keylogging activity."]).
 	ml_explain(["GetKeyState", "GetForegroundWindow"]) :- add_explanation(["Program does keylogging activity."]).
 	ml_explain(["CreateService", "StartService"]) :- add_explanation(["Program creates and starts a suspicious service."]).
-	ml_explain(["OpenProcessToken", "LookupPrivilegeValueA", "AdjustTokenPrivileges"]) :- add_explanation(["Program tries to escalate privileges."]).
 	ml_explain(["CreateToolhelp32Snapshot", "Process32First", "Process32Next"]) :- add_explanation(["Program looks for a specific process (to do process injection on, detect a process running i.e. a debugger or anti-virus)."]).
 	ml_explain(["SetWindowsHookEx", "UnhookWindowsHookEx"]) :- add_explanation(["Program sets and unsets a hook, usually used to hook root kits."]).
 	
