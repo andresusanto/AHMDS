@@ -22,13 +22,22 @@ namespace AHMDS.Engine
         private static Sandboxie sbx = new Sandboxie(SBIE_DLL_LOC);
 
         
-        private static Dictionary<string, AHMDSWindow> aWindow = new Dictionary<string, AHMDSWindow>() {
-            {SBIE_BOX_NAMES[0], new AHMDSWindow(SBIE_BOX_NAMES[0])},
-            {SBIE_BOX_NAMES[1], new AHMDSWindow(SBIE_BOX_NAMES[1])},
-            {SBIE_BOX_NAMES[2], new AHMDSWindow(SBIE_BOX_NAMES[2])} 
-        };
+        private static Dictionary<string, AHMDSWindow> aWindow; // = new Dictionary<string, AHMDSWindow>() {
+        //    {SBIE_BOX_NAMES[0], new AHMDSWindow(SBIE_BOX_NAMES[0])},
+        //    {SBIE_BOX_NAMES[1], new AHMDSWindow(SBIE_BOX_NAMES[1])},
+        //    {SBIE_BOX_NAMES[2], new AHMDSWindow(SBIE_BOX_NAMES[2])} 
+        //};
 
-        
+        public static void Initialize()
+        {
+            aWindow = new Dictionary<string, AHMDSWindow>();
+
+            foreach (string box in SBIE_BOX_NAMES)
+            {
+                aWindow.Add(box, new AHMDSWindow(box));
+            }
+        }
+
         public static void ProcessQueue()
         {
             foreach (string sandbox in SBIE_BOX_NAMES)
@@ -80,14 +89,16 @@ namespace AHMDS.Engine
 
                 // bagian cleanup sandbox sebelum digunakan
                 sbx.KillAll(box);
-                Process.Start(SBIE_START_LOC, "/nosbiectrl /silent /box:" + box + " delete_sandbox_silent exit 9").WaitForExit();
+                //Process.Start(SBIE_START_LOC, "/nosbiectrl /silent /box:" + box + " delete_sandbox_silent exit 9").WaitForExit();
+                sbieCommand("/nosbiectrl /silent /box:" + box + " delete_sandbox_silent exit 9");
 
                 this.apiCalls = new List<string>();
                 aWindow[box].subscribeHandler(apiHandler);
 
                 // bagian eksekusi program
-                Process.Start(SBIE_START_LOC, "/nosbiectrl /hide_window /silent /elevate /box:" + box + " \"" + image_address + "\""); //: /hide_window
-
+                //Process.Start(SBIE_START_LOC, "/nosbiectrl /hide_window /silent /elevate /box:" + box + " \"" + image_address + "\""); //: /hide_window
+                sbieCommand("/nosbiectrl /hide_window /silent /elevate /box:" + box + " \"" + image_address + "\"");
+                
                 analysisThread = new Thread(Analyzer);
                 analysisThread.Start();
             }
@@ -104,11 +115,23 @@ namespace AHMDS.Engine
                 //ProcessQueue();
             }
 
+            private void sbieCommand(string command)
+            {
+                Process p = new Process();
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.FileName = SBIE_START_LOC;
+                p.StartInfo.Arguments = command;
+                p.StartInfo.CreateNoWindow = true;
+                p.Start();
+                p.WaitForExit();
+            }
 
             private void apiHandler(string apiCall)
             {
                 string[] apiDetails = apiCall.Split('(');
-                this.apiCalls.Add(apiDetails[0]);
+                string api = apiDetails[0].Trim();
+                if (!apiCalls.Contains(api)) this.apiCalls.Add(api);
             }
 
             private void Analyzer()

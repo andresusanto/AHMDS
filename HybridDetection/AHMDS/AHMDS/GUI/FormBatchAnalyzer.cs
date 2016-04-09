@@ -21,7 +21,7 @@ namespace AHMDS
             InitializeComponent();
             FormBatchAnalyzer.CheckForIllegalCrossThreadCalls = false;
             currentAnalyzed = new List<HybridAnalyzer.HybridObject>();
-
+            DynamicAnalyzer.Initialize();
         }
 
         private void updateResult(Analyzer.AnalyzedObject dsender, MalwareInfo result)

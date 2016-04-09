@@ -25,6 +25,8 @@ namespace AHMDS
             // receiver log
             AHMDSWindow.Handler wnd1 = delegate(string apiCall)
             {
+                //string[] apiDetails = apiCall.Split('(');
+
                 textBox1.AppendText(apiCall);
                 textBox1.AppendText("\n");
             };
@@ -41,7 +43,8 @@ namespace AHMDS
                 textBox3.AppendText("\n");
             };
 
-            //cw1 = new AHMDSWindow("Malware1", "Malware1", wnd1);
+            cw1 = new AHMDSWindow("Malware1");
+            cw1.subscribeHandler(tes);
 
             //cw2 = new AHMDSWindow("Malware2", "Malware2", wnd2);
 
@@ -53,6 +56,13 @@ namespace AHMDS
         AHMDSWindow cw1;
         AHMDSWindow cw2;
         AHMDSWindow cw3;
+
+        private void tes(string apiCall)
+        {
+            string[] apiDetails = apiCall.Split('(');
+            textBox1.AppendText(apiDetails[0]);
+            textBox1.AppendText("\n");
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {

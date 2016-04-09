@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using AHMDS.Engine;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace AHMDS.GUI
 {
@@ -17,11 +18,18 @@ namespace AHMDS.GUI
         private int secondsToGo = Properties.Settings.Default.DynamicAnalysisDuration;
         private bool isWaiting = false;
 
+        //[DllImport("kernel32.dll", SetLastError = true)]
+        //[return: MarshalAs(UnmanagedType.Bool)]
+        //static extern bool AllocConsole();
+
         public FormSingleAnalyzer(string FileName)
         {
             FormSingleAnalyzer.CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
             lblFilename.Text = FileName;
+
+            DynamicAnalyzer.Initialize();
+            //AllocConsole();
         }
 
         private void updateStatus(Analyzer.AnalyzedObject asender)

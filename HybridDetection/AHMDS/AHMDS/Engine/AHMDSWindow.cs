@@ -152,7 +152,7 @@ namespace AHMDS.Engine
                     Encoding unicodeStr = Encoding.ASCII;
                     char[] myString = unicodeStr.GetChars(data);
                     string returnText = new string(myString);
-
+                    
                     handler(returnText);
                 }
             }
